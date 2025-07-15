@@ -1,0 +1,43 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "food delivery telegram web app va admin qismi uchun api",
+  "keywords": [
+    "nodejs",
+    "express",
+    "mongodb",
+    "react",
+    "webapp",
+    "delivery",
+    "shopping"
+  ],
+  "homepage": "https://github.com/jasurbekmuminjonov/food-delivery-webapp#readme",
+  "bugs": {
+    "url": "https://github.com/jasurbekmuminjonov/food-delivery-webapp/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasurbekmuminjonov/food-delivery-webapp.git"
+  },
+  "license": "ISC",
+  "author": "Jasurbek <jasurmominjonov2818@gmail.com>",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.3",
+    "multer": "^2.0.1",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
