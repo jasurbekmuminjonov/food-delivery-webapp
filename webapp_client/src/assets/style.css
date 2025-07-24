@@ -1,0 +1,244 @@
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;800;900&display=swap);
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+:root {
+  --brand-color: #519872;
+  --text-primary: #1e293b;
+  --text-secondary: #475569;
+}
+body {
+  font-family: "Roboto", sans-serif;
+}
+button,
+input,
+select,
+textarea {
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+.auth-layout {
+  width: 100vw;
+  max-width: 430px;
+  height: 100svh;
+  background: #f4f6f9;
+  /* padding-block: 12px;
+  padding-inline: 12px; */
+  overflow: hidden;
+}
+.auth-phone {
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  padding-block: 12px;
+  padding-inline: 12px;
+}
+.phone-body {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+}
+.otp-auth img,
+.userform-auth img,
+.auth-phone img {
+  max-width: 60px;
+}
+.auth-layout b {
+  font-size: 20px;
+  font-weight: 400;
+}
+.auth-layout input,
+.auth-layout select {
+  width: 100%;
+  height: 50px;
+  padding-inline: 12px;
+  font-size: 18px;
+  border-radius: 6px;
+  border: 2px solid #d8d8d8b0;
+  &:focus {
+    border: 2px solid var(--brand-color);
+  }
+}
+.auth-layout select {
+  background-color: #fff;
+}
+.auth-phone input {
+  background-image: url(../assets/uz.png);
+  background-repeat: no-repeat;
+  background-position: 6px center;
+  background-size: contain;
+  padding-inline: 60px;
+}
+.phone-body button {
+  width: 100%;
+  height: 50px;
+  font-size: 18px;
+  border-radius: 6px;
+  background-color: var(--brand-color);
+  color: #fff;
+}
+.phone-body p {
+  font-size: 16px;
+  color: var(--text-secondary);
+}
+.phone-body p a {
+  color: var(--text-secondary);
+  text-decoration: underline;
+}
+.otp-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.otp-body > :nth-child(1),
+.otp-body > :nth-child(2),
+.otp-body > :nth-child(3) {
+  text-align: center;
+  align-self: center;
+}
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.otp-body input {
+  text-align: center;
+}
+.otp-body > button {
+  width: 120px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background-color: var(--brand-color);
+  border-radius: 6px;
+  &:disabled {
+    color: gray;
+    background: #d8d8d8;
+  }
+}
+.otp-body > div {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+}
+.otp-body > div > img {
+  margin: 0 auto;
+}
+.otp-body > div > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  padding: 6px;
+  background: transparent;
+}
+.otp-auth {
+  padding-block: 12px;
+  padding-inline: 12px;
+}
+.introduction-auth {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+}
+.int-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-block-end: 12px;
+  padding-inline: 12px;
+}
+.int-body p {
+  font-size: 24px;
+}
+.int-body button {
+  width: 100%;
+  height: 50px;
+  color: #fff;
+  background-color: var(--brand-color);
+  border-radius: 6px;
+  font-size: 18px;
+}
+.int-body p b {
+  font-weight: 600;
+}
+.introduction-auth img {
+  object-fit: cover;
+  height: 60%;
+}
+.int-body span {
+  color: var(--text-secondary);
+}
+
+.userform-auth > div > img {
+  margin: 0 auto;
+}
+.userform-auth > div > button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  padding: 6px;
+  background: transparent;
+}
+.userform-auth > div {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+}
+.userform-auth {
+  padding-inline: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.userform-auth form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.userform-auth form span {
+  color: var(--text-secondary);
+}
+.userform-auth form input {
+  width: 100%;
+}
+.userform-auth form div {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.userform-auth form div div {
+  height: 40px;
+  width: calc(100% - 6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ccc;
+  background: #fff;
+  border-radius: 6px;
+}
+.userform-auth form button {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  border-radius: 6px;
+  background-color: var(--brand-color);
+  color: #fff;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+}
