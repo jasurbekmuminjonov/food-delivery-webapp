@@ -4,6 +4,7 @@
   padding: 0;
   box-sizing: border-box;
   text-decoration: none;
+  user-select: none;
 }
 :root {
   --brand-color: #519872;
@@ -241,4 +242,42 @@ input[type="number"]::-webkit-inner-spin-button {
   align-items: center;
   justify-content: center;
   margin-top: 12px;
+}
+.success-auth {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-inline: 12px;
+  padding-block: 12px;
+  width: 100%;
+  height: 100%;
+}
+.success-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  justify-content: center;
+  width: 100%;
+  height: 60vh;
+  align-items: end;
+  justify-content: end;
+}
+.success-body img {
+  width: 50%;
+  display: flex;
+  align-self: center;
+  justify-self: center;
+}
+.success-body h2 {
+  text-align: center;
+}
+.success-auth button {
+  height: 50px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+  background-color: var(--brand-color);
 }
