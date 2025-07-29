@@ -121,6 +121,11 @@ const ProductSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    supermarket_id: {
+      type: mongoose.Types.ObjectId,
+      ref: "Supermarket",
+      required: true,
+    },
   },
   { timestamps: true }
 );
