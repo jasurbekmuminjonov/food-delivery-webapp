@@ -27,22 +27,26 @@ const ProductSchema = new mongoose.Schema(
     },
     expiration: {
       type: Number,
-      required: true,
+      default: null,
     },
     additionals: {
       type: [String],
       default: [],
+    },
+    selling_price: {
+      type: Number,
+      required: true,
     },
     discount_log: {
       type: [
         {
           start_date: {
             type: Date,
-            required: true,
+            default: Date.now,
           },
           end_date: {
             type: Date,
-            required: true,
+            default: null,
           },
           percent: {
             type: Number,
@@ -58,6 +62,10 @@ const ProductSchema = new mongoose.Schema(
         },
       ],
       default: [],
+    },
+    total_stock: {
+      type: Number,
+      default: 0,
     },
     stock_log: {
       type: [
@@ -87,6 +95,7 @@ const ProductSchema = new mongoose.Schema(
           },
         },
       ],
+      default: [],
     },
     product_description: {
       type: String,
@@ -115,16 +124,16 @@ const ProductSchema = new mongoose.Schema(
           required: true,
         },
       },
-      default: null,
+      default: {
+        kkal: null,
+        fat: null,
+        protein: null,
+        uglevod: null,
+      },
     },
     strg_conditions: {
       type: String,
       default: null,
-    },
-    supermarket_id: {
-      type: mongoose.Types.ObjectId,
-      ref: "Supermarket",
-      required: true,
     },
   },
   { timestamps: true }

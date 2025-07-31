@@ -8,8 +8,8 @@ const hashPassword = async (password) => {
 };
 
 // Token yaratish
-const generateToken = (user) => {
-  return jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+const generateToken = (user, type) => {
+  return jwt.sign({ id: user._id, type: type }, process.env.JWT_SECRET);
 };
 
 // Parolni solishtirish

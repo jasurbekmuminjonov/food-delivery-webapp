@@ -2,15 +2,15 @@ const mongoose = require("mongoose");
 
 const AdminSchema = new mongoose.Schema(
   {
-    admin_name: {
+    admin_login: {
       type: String,
       required: true,
     },
-    supermarket_id: {
-      type: mongoose.Types.ObjectId,
-      ref: "Supermarket",
+    admin_password: {
+      type: String,
       required: true,
     },
+
   },
   { timestamps: true }
 );

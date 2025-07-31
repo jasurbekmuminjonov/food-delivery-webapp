@@ -10,9 +10,8 @@ const CourierSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    supermarket_id: {
-      type: mongoose.Types.ObjectId,
-      ref: "Supermarket",
+    courier_password: {
+      type: String,
       required: true,
     },
     courier_gender: {
