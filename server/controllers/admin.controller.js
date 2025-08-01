@@ -7,10 +7,11 @@ const {
 
 exports.createAdmin = async (req, res) => {
   try {
-    const { admin_password } = req.body;
+    let { admin_password } = req.body;
     const hashed = await hashPassword(admin_password);
     admin_password = hashed;
-    await Admin.create(req.body);
+
+    await Admin.create({ ...req.body, admin_password });
     res.status(201).json({ message: "Admin yaratildi" });
   } catch (err) {
     console.log(err.message);
@@ -29,7 +30,7 @@ exports.loginAdmin = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Parol xato" });
     }
-    const token = generateToken(user, "admin");
+    const token = generateToken(admin, "admin");
     res.status(200).json(token);
   } catch (err) {
     console.log(err.message);
