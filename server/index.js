@@ -16,10 +16,10 @@ app.use(
 app.use("/images", express.static(path.join(__dirname, "uploads")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use("/api/v1", tokenAuth, require("./routes/admin.routes"));
-app.use("/api/v1", basicAuth, require("./routes/user.routes"));
+app.use("/api/v1/token", tokenAuth, require("./routes/admin.routes"));
+app.use("/api/v1/basic", basicAuth, require("./routes/user.routes"));
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
-  console.log(`Server ishga tushdi: http://localhost:${PORT}`);
+  console.log(`Server ishga tushdi: http://localhost:${PORT}/api/v1`);
 });

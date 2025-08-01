@@ -9,6 +9,7 @@ const CourierSchema = new mongoose.Schema(
     courier_phone: {
       type: String,
       required: true,
+      match: /^\+998\d{9}$/,
     },
     courier_password: {
       type: String,

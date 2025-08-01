@@ -2,7 +2,14 @@ const User = require("../models/user.model");
 
 exports.createUser = async (req, res) => {
   try {
-    await User.create(req.body);
+    const { telegram_id } = req.body;
+    const user = await User.findOne({ telegram_id });
+    if (!user) {
+      await User.create(req.body);
+    } else {
+      await User.findOneAndUpdate({ telegram_id }, req.body);
+    }
+    res.status(201).json({ message: "Foydalanuvchi saqlandi" });
   } catch (err) {
     console.log(err.message);
     return res.status(500).json({ message: "Serverda xatolik", err });
@@ -22,6 +29,7 @@ exports.getUsers = async (req, res) => {
 exports.getUserByQuery = async (req, res) => {
   try {
     const { telegram_id, user_phone } = req.query;
+    console.log(telegram_id);
 
     if (!telegram_id && !user_phone) {
       return res
@@ -32,6 +40,8 @@ exports.getUserByQuery = async (req, res) => {
     const filter = telegram_id ? { telegram_id } : { user_phone };
 
     const user = await User.findOne(filter);
+    console.log(user);
+    
 
     if (!user) {
       return res.status(400).json({ message: "Foydalanuvchi topilmadi" });
@@ -43,4 +53,3 @@ exports.getUserByQuery = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
-

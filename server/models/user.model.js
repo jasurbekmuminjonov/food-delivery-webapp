@@ -4,18 +4,18 @@ const UserSchema = new mongoose.Schema(
   {
     user_name: {
       type: String,
-      required: true,
+      default: "",
     },
     user_phone: {
       type: String,
-      required: true,
-      match: /^\d{9}$/,
+      // required: true,
+      // match: /^\d{9}$/,
       default: null,
     },
     user_gender: {
       type: String,
-      required: true,
-      enum: ["male", "female"],
+      // enum: ["male", "female"],
+      default: "",
     },
     telegram_id: {
       type: String,
@@ -35,11 +35,11 @@ const UserSchema = new mongoose.Schema(
       type: {
         lat: {
           type: Number,
-          required: true,
+          // required: true,
         },
         long: {
           type: Number,
-          required: true,
+          // required: true,
         },
       },
       default: {
