@@ -1,19 +1,78 @@
 const Product = require("../models/product.model");
 
+// exports.createProduct = async (req, res) => {
+//   try {
+//     console.log(req.files);
+
+//     const productImages = req.files.map((item, index) => ({
+//       image_url: `http://localhost:8080/images/${item.filename}`,
+//       isMain: index === 0,
+//     }));
+//     req.body.image_log = productImages;
+//     const product = await Product.create(req.body);
+//     res.status(201).json({ message: "Tovar yaratildi", product });
+//   } catch (err) {
+//     console.log(err.message);
+//     return res.status(500).json({ message: "Serverda xatolik", err });
+//   }
+// };
+
 exports.createProduct = async (req, res) => {
   try {
-    console.log(req.files);
-    
-    const productImages = req.files.map((item, index) => ({
+    const files = req.files || [];
+
+    const productImages = files.map((item, index) => ({
       image_url: `http://localhost:8080/images/${item.filename}`,
       isMain: index === 0,
     }));
-    req.body.image_log = productImages;
-    const product = await Product.create(req.body);
+
+    const {
+      product_name,
+      category,
+      subcategory,
+      unit,
+      unit_description,
+      expiration,
+      selling_price,
+      product_description,
+      product_ingredients,
+      additionals,
+      "nutritional_value.kkal": kkal,
+      "nutritional_value.protein": protein,
+      "nutritional_value.fat": fat,
+      "nutritional_value.uglevod": uglevod,
+    } = req.body;
+
+    const parsedProduct = {
+      product_name,
+      category,
+      subcategory,
+      unit,
+      unit_description,
+      expiration: Number(expiration),
+      selling_price: Number(selling_price),
+      product_description,
+      product_ingredients,
+      additionals: Array.isArray(additionals)
+        ? additionals
+        : additionals
+        ? [additionals]
+        : [],
+      nutritional_value: {
+        kkal: Number(kkal),
+        protein: Number(protein),
+        fat: Number(fat),
+        uglevod: Number(uglevod),
+      },
+      image_log: productImages,
+    };
+
+    const product = await Product.create(parsedProduct);
+
     res.status(201).json({ message: "Tovar yaratildi", product });
   } catch (err) {
     console.log(err.message);
-    return res.status(500).json({ message: "Serverda xatolik", err });
+    res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
 
@@ -41,7 +100,6 @@ exports.editProduct = async (req, res) => {
       product_description,
       product_ingredients,
       nutritional_value,
-      strg_conditions,
       selling_price,
     } = req.body;
 
@@ -56,7 +114,6 @@ exports.editProduct = async (req, res) => {
       product_description,
       product_ingredients,
       nutritional_value,
-      strg_conditions,
       selling_price,
     });
     res.status(200).json({ message: "Tovar tahrirlandi" });

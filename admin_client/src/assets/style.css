@@ -1,0 +1,123 @@
+@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;800;900&display=swap);
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+input,
+textarea,
+button,
+select {
+  border: none;
+  outline: none;
+  cursor: pointer;
+}
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+.login {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.login-form {
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding-inline: 15px;
+  padding-block: 30px;
+  border: 1px solid #ccc;
+}
+.login-form > p {
+  font-size: 20px;
+}
+.login-form > input {
+  width: 100%;
+  height: 40px;
+  padding-inline: 5px;
+  border: 1px solid #ccc;
+}
+.login-form > button {
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.layout {
+  max-width: 1920px;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-self: center;
+}
+.layout > nav {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  background: #fbed9e;
+  border: 1px solid #d4c04b;
+}
+.layout > nav > a {
+  width: 160px;
+  height: 98px;
+  display: flex;
+  background: transparent;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  border-right: 1px solid #d4c04b;
+}
+.layout > nav > a > img {
+  width: 50px;
+  height: 50px;
+}
+.active-link {
+  background: #ffffd9 !important;
+}
+.layout > main {
+  background: #ffffff;
+  width: 100%;
+  height: 100%;
+}
+.product-add {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  gap: 5px;
+}
+.product-add > form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 5px;
+  padding-inline: 10px;
+  width: 50%;
+}
+.product-add > form input,
+.product-add > form textarea,
+.product-add > form select,
+.product-add > form button {
+  border: 1px solid #d5d5d5d5;
+  padding: 5px;
+  resize: vertical;
+}
+.product-add > form > div {
+  display: flex;
+  gap: 15px;
+}
+.product-add > form > div > div {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}

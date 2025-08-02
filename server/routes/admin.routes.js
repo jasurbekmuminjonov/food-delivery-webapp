@@ -53,7 +53,7 @@ rt.delete("/product/image", deleteImageInProduct);
 rt.put("/product/image/main", setImageToMain);
 rt.post("/product/discount/:id", createDiscountForProduct);
 rt.delete("/product/discount", removeDiscountInProduct);
-rt.post("/product/stock/:id", createStockForProduct);
+rt.post("/product/stock/:id", createStockForProduct); 
 rt.get("/product/search", searchProducts);
 
 rt.post("/category/create", createCategory);

@@ -1,12 +1,9 @@
-import React from 'react';
+import Layout from "./layout/layout";
+import Login from "./pages/Login";
 
 const App = () => {
-  return (
-    <div>
-      
-    </div>
-  );
+  const token = localStorage.getItem("token");
+  return token ? <Layout /> : <Login />;
 };
-
 
 export default App;

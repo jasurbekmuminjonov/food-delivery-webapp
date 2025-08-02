@@ -131,10 +131,7 @@ const ProductSchema = new mongoose.Schema(
         uglevod: null,
       },
     },
-    strg_conditions: {
-      type: String,
-      default: null,
-    },
+
   },
   { timestamps: true }
 );
