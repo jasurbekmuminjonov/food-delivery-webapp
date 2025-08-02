@@ -96,28 +96,13 @@ body {
   display: flex;
   gap: 5px;
 }
-.product-add > form {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  padding: 5px;
-  padding-inline: 10px;
+
+.product-add-form {
+  width: 100%;
+  padding: 5px 20px;
+}
+
+.product-add-grid {
   width: 50%;
-}
-.product-add > form input,
-.product-add > form textarea,
-.product-add > form select,
-.product-add > form button {
-  border: 1px solid #d5d5d5d5;
-  padding: 5px;
-  resize: vertical;
-}
-.product-add > form > div {
-  display: flex;
-  gap: 15px;
-}
-.product-add > form > div > div {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
+  height: 100%;
 }
