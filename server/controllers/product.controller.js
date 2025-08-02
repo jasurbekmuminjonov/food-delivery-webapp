@@ -4,7 +4,7 @@ const Category = require("../models/category.model");
 
 exports.createProduct = async (req, res) => {
   try {
-    const productImages = req.files.map((item) => ({
+    const productImages = req.files.map((item, index) => ({
       image_url: `http://localhost:8080/images/${item.filename}`,
       isMain: index === 0,
     }));
