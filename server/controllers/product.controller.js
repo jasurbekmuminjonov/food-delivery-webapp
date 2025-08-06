@@ -1,22 +1,5 @@
 const Product = require("../models/product.model");
 
-// exports.createProduct = async (req, res) => {
-//   try {
-//     console.log(req.files);
-
-//     const productImages = req.files.map((item, index) => ({
-//       image_url: `http://localhost:8080/images/${item.filename}`,
-//       isMain: index === 0,
-//     }));
-//     req.body.image_log = productImages;
-//     const product = await Product.create(req.body);
-//     res.status(201).json({ message: "Tovar yaratildi", product });
-//   } catch (err) {
-//     console.log(err.message);
-//     return res.status(500).json({ message: "Serverda xatolik", err });
-//   }
-// };
-
 exports.createProduct = async (req, res) => {
   try {
     const files = req.files || [];
@@ -78,7 +61,9 @@ exports.createProduct = async (req, res) => {
 
 exports.getProducts = async (req, res) => {
   try {
-    const products = await Product.find();
+    const products = await Product.find()
+      .populate("category")
+      .populate("subcategory");
     res.status(200).json(products);
   } catch (err) {
     console.log(err.message);
@@ -89,37 +74,53 @@ exports.getProducts = async (req, res) => {
 exports.editProduct = async (req, res) => {
   try {
     const { id } = req.params;
+
     const {
       product_name,
-      subcategory,
       category,
+      subcategory,
       unit,
       unit_description,
       expiration,
-      additionals,
+      selling_price,
       product_description,
       product_ingredients,
-      nutritional_value,
-      selling_price,
+      additionals,
+      "nutritional_value.kkal": kkal,
+      "nutritional_value.protein": protein,
+      "nutritional_value.fat": fat,
+      "nutritional_value.uglevod": uglevod,
     } = req.body;
 
-    await Product.findByIdAndUpdate(id, {
+    const updatedProduct = {
       product_name,
-      subcategory,
       category,
+      subcategory,
       unit,
       unit_description,
-      expiration,
-      additionals,
+      expiration: Number(expiration),
+      selling_price: Number(selling_price),
       product_description,
       product_ingredients,
-      nutritional_value,
-      selling_price,
-    });
+      additionals: Array.isArray(additionals)
+        ? additionals
+        : additionals
+        ? [additionals]
+        : [],
+      nutritional_value: {
+        kkal: Number(kkal),
+        protein: Number(protein),
+        fat: Number(fat),
+        uglevod: Number(uglevod),
+      },
+    };
+
+    await Product.findByIdAndUpdate(id, updatedProduct);
+
     res.status(200).json({ message: "Tovar tahrirlandi" });
   } catch (err) {
     console.log(err.message);
-    return res.status(500).json({ message: "Serverda xatolik", err });
+    res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
 
@@ -127,7 +128,7 @@ exports.inserImageToProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const payload = {
-      image_url: req.file.filename,
+      image_url: `http://localhost:8080/images/${req.file.filename}`,
       isMain: false,
     };
     await Product.findByIdAndUpdate(id, { $push: { image_log: payload } });
@@ -229,7 +230,8 @@ exports.removeDiscountInProduct = async (req, res) => {
       return res.status(400).json({ message: "Chegirma topilmadi" });
     }
 
-    editingDiscount.status = "inactive";
+    editingDiscount.status = "inactive";    
+    editingDiscount.end_date = new Date();
     await editingProduct.save();
 
     res.status(200).json({ message: "Tovardan chegirma olib tashlandi" });

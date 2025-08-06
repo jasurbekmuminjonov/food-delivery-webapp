@@ -43,17 +43,17 @@ rt.post("/courier/create", createCourier);
 rt.post("/courier/login", loginCourier);
 rt.get("/courier/get", getCouriers);
 rt.put("/courier/:id", editCourier);
-rt.put("/courier/password", editCourierPassword);
+rt.put("/courier/password/:id", editCourierPassword);
 
 rt.post("/product/create", upload.array("image_log"), createProduct);
 rt.get("/product/get", getProducts);
-rt.put("/product/:id", editProduct);
+rt.put("/product/:id", upload.none(), editProduct);
 rt.post("/product/image/:id", upload.single("image"), inserImageToProduct);
 rt.delete("/product/image", deleteImageInProduct);
 rt.put("/product/image/main", setImageToMain);
 rt.post("/product/discount/:id", createDiscountForProduct);
 rt.delete("/product/discount", removeDiscountInProduct);
-rt.post("/product/stock/:id", createStockForProduct); 
+rt.post("/product/stock/:id", createStockForProduct);
 rt.get("/product/search", searchProducts);
 
 rt.post("/category/create", createCategory);

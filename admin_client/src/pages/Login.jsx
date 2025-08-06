@@ -1,41 +1,68 @@
-import { LuLogIn } from "react-icons/lu";
 import { useLoginAdminMutation } from "../context/services/admin.service";
-import { notification } from "antd";
+import { notification, Form, Input, Button, Typography } from "antd";
+import { LuLogIn } from "react-icons/lu";
+
+const { Title } = Typography;
+
 const Login = () => {
+  const [form] = Form.useForm();
   const [loginAdmin] = useLoginAdminMutation();
-  async function handleSubmit(e) {
-    e.preventDefault();
+
+  const handleSubmit = async (values) => {
     try {
-      const login = e.target[0].value;
-      const password = e.target[1].value;
       const res = await loginAdmin({
-        admin_login: login,
-        admin_password: password,
+        admin_login: values.admin_login,
+        admin_password: values.admin_password,
       }).unwrap();
-      console.log(res);
       if (res) {
         localStorage.setItem("token", res);
         window.location.reload();
       }
     } catch (err) {
       console.log(err);
-      notification.error({ message: err.data.message, description: "" });
+      notification.error({
+        message: err?.data?.message || "Kirishda xatolik",
+        description: "",
+      });
     }
-  }
+  };
+
   return (
-    <div className="login">
-      <form
+    <div
+      className="login"
+      style={{ maxWidth: 400, margin: "0 auto" }}
+    >
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={handleSubmit}
         autoComplete="off"
-        onSubmit={(e) => handleSubmit(e)}
         className="login-form"
       >
-        <p>Hisobingizga kiring</p>
-        <input type="text" name="admin_login" placeholder="Login" />
-        <input type="password" name="admin_password" placeholder="Parol" />
-        <button type="submit">
-          <LuLogIn /> Kirish
-        </button>
-      </form>
+        <Title level={3}>Hisobingizga kiring</Title>
+
+        <Form.Item
+          label="Login"
+          name="admin_login"
+          rules={[{ required: true, message: "Iltimos, loginni kiriting!" }]}
+        >
+          <Input placeholder="Login" />
+        </Form.Item>
+
+        <Form.Item
+          label="Parol"
+          name="admin_password"
+          rules={[{ required: true, message: "Iltimos, parolni kiriting!" }]}
+        >
+          <Input.Password placeholder="Parol" />
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" block icon={<LuLogIn />}>
+            Kirish
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 };

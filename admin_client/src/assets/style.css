@@ -29,9 +29,9 @@ body {
   width: 300px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  /* gap: 15px; */
   padding-inline: 15px;
-  padding-block: 30px;
+  padding-block: 15px;
   border: 1px solid #ccc;
 }
 .login-form > p {
@@ -105,4 +105,16 @@ body {
 .product-add-grid {
   width: 50%;
   height: 100%;
+}
+.category-add-form {
+  width: 50%;
+  height: 100%;
+  padding: 5px;
+}
+body::-webkit-scrollbar,
+div::-webkit-scrollbar {
+  display: none;
+}
+.courier-add {
+  padding: 15px;
 }

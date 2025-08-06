@@ -29,7 +29,6 @@ exports.getUsers = async (req, res) => {
 exports.getUserByQuery = async (req, res) => {
   try {
     const { telegram_id, user_phone } = req.query;
-    console.log(telegram_id);
 
     if (!telegram_id && !user_phone) {
       return res
@@ -40,7 +39,6 @@ exports.getUserByQuery = async (req, res) => {
     const filter = telegram_id ? { telegram_id } : { user_phone };
 
     const user = await User.findOne(filter);
-    console.log(user);
     
 
     if (!user) {

@@ -1,5 +1,6 @@
 const Order = require("../models/order.model");
 const User = require("../models/user.model");
+const Product = require("../models/product.model");
 
 exports.createOrder = async (req, res) => {
   try {
@@ -16,6 +17,12 @@ exports.createOrder = async (req, res) => {
       (acc, p) => acc + p.quantity * p.sale_price,
       0
     );
+    for (const item of products) {
+      await Product.findByIdAndUpdate(item.product_id, {
+        $inc: { total_stock: -item.quantity },
+      });
+    }
+
     req.body.total_price = totalPrice;
     req.body.user_id = user._id;
     await Order.create(req.body);
@@ -127,9 +134,14 @@ exports.completeDelivering = async (req, res) => {
 exports.cancelOrder = async (req, res) => {
   try {
     const { id } = req.params;
-    await Order.findByIdAndUpdate(id, {
+    const order = await Order.findByIdAndUpdate(id, {
       $set: { order_status: "canceled", canceled_date: Date.now() },
     });
+    for (const item of order.products) {
+      await Product.findByIdAndUpdate(item.product_id, {
+        $inc: { total_stock: item.quantity },
+      });
+    }
     res.status(200).json({ message: "Buyurtma yetkazishga tayyorlandi" });
   } catch (err) {
     console.log(err.message);

@@ -5,7 +5,12 @@ import courier from "../assets/courier.png";
 import male from "../assets/male.png";
 import addProduct from "../assets/add_product.png";
 import addCourier from "../assets/add_courier.png";
+import addCategory from "../assets/add_category.png";
 import ProductAdd from "../pages/ProductAdd";
+import Products from "../pages/Products";
+import CategoryAdd from "../pages/CategoryAdd";
+import CourierAdd from "../pages/CourierAdd";
+import Couriers from "../pages/Couriers";
 
 const Layout = () => {
   const location = useLocation();
@@ -52,13 +57,24 @@ const Layout = () => {
           <img src={male} alt="male" />
           Foydalanuvchilar
         </Link>
+        <Link
+          to="/category/add"
+          className={location.pathname === "/category/add" ? "active-link" : ""}
+        >
+          <img src={addCategory} alt="add_category" />
+          Kategoriya qo'shish
+        </Link>
       </nav>
       <main>
         <Routes>
           <Route path="/" element={<p>Buyurtmalar</p>} />
-          <Route path="/product" element={<p>Tovarlar</p>} />
+          <Route path="/product" element={<Products />} />
+          <Route path="/courier" element={<Couriers />} />
           <Route path="/product/add" element={<ProductAdd />} />
           <Route path="/product/add/:id" element={<ProductAdd />} />
+          <Route path="/courier/add" element={<CourierAdd />} />
+          <Route path="/courier/add/:id" element={<CourierAdd />} />
+          <Route path="/category/add" element={<CategoryAdd />} />
         </Routes>
       </main>
     </div>

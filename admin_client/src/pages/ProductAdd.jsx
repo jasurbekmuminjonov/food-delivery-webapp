@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Upload,
   Form,
@@ -11,8 +11,16 @@ import {
   Checkbox,
 } from "antd";
 import { FaX } from "react-icons/fa6";
-import { useCreateProductMutation } from "../context/services/product.service";
+import {
+  useCreateProductMutation,
+  useEditProductMutation,
+  useGetProductsQuery,
+} from "../context/services/product.service";
 import { PlusOutlined } from "@ant-design/icons";
+import { MdOutlinePreview } from "react-icons/md";
+import { cloneElement } from "react";
+import { useGetCategoriesQuery } from "../context/services/category.service";
+import { useParams } from "react-router-dom";
 
 const { TextArea } = Input;
 
@@ -21,9 +29,57 @@ const ProductAdd = () => {
   const [newAdditional, setNewAdditional] = useState("");
   const [fileList, setFileList] = useState([]);
   const [showNutrition, setShowNutrition] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState({});
+  const { data: products = [] } = useGetProductsQuery();
+  const { data: categories = [] } = useGetCategoriesQuery();
+  const { id } = useParams();
+  const [form] = Form.useForm();
 
+  const [editProduct] = useEditProductMutation();
   const [createProduct] = useCreateProductMutation();
-  const formRef = useRef();
+
+  const isEdit = !!id;
+
+  useEffect(() => {
+    if (isEdit && products.length > 0) {
+      const product = products.find((p) => p._id === id);
+      if (product) {
+        const {
+          product_name,
+          product_description,
+          product_ingredients,
+          nutritional_value,
+          selling_price,
+          additionals = [],
+          unit,
+          unit_description,
+          expiration,
+          category,
+          subcategory,
+        } = product;
+
+        form.setFieldsValue({
+          product_name,
+          product_description,
+          product_ingredients,
+          nutritional_value,
+          selling_price,
+          unit,
+          unit_description,
+          expiration,
+          category: category._id,
+          subcategory: subcategory._id,
+        });
+
+        setAdditionals(additionals);
+        setShowNutrition(!!nutritional_value);
+        const cat = categories.find((cat) => cat._id === category._id);
+        console.log(cat);
+
+        setSelectedCategory(cat);
+      }
+    }
+  }, [id, products, categories]);
 
   const handleAddAdditional = () => {
     if (newAdditional.trim()) {
@@ -49,7 +105,6 @@ const ProductAdd = () => {
         value !== null &&
         !Array.isArray(value)
       ) {
-        // Agar showNutrition false bo‘lsa, nutritional_value ni kiritmaymiz
         if (key === "nutritional_value" && !showNutrition) return;
 
         Object.entries(value).forEach(([subKey, subValue]) => {
@@ -66,9 +121,14 @@ const ProductAdd = () => {
     });
 
     try {
-      await createProduct(formData).unwrap();
-      message.success("Mahsulot muvaffaqiyatli qo'shildi");
-      formRef.current.resetFields();
+      if (isEdit) {
+        await editProduct({ id, body: formData }).unwrap();
+        message.success("Mahsulot muvaffaqiyatli tahrirlandi");
+      } else {
+        await createProduct(formData).unwrap();
+        message.success("Mahsulot muvaffaqiyatli qo'shildi");
+      }
+      form.resetFields();
       setAdditionals([]);
       setFileList([]);
       setShowNutrition(true);
@@ -84,7 +144,7 @@ const ProductAdd = () => {
         <Form
           layout="vertical"
           onFinish={onFinish}
-          ref={formRef}
+          form={form}
           autoComplete="off"
           style={{ display: "flex", gap: "15px" }}
         >
@@ -113,7 +173,7 @@ const ProductAdd = () => {
                 <Form.Item name="unit" rules={[{ required: true }]} noStyle>
                   <Select placeholder="Tovar birligi" style={{ width: "100%" }}>
                     <Select.Option value="dona">Dona</Select.Option>
-                    <Select.Option value="gr">Kilogramm</Select.Option>
+                    <Select.Option value="kg">Kilogramm</Select.Option>
                     <Select.Option value="litr">Litr</Select.Option>
                     <Select.Option value="sm">Santimetr</Select.Option>
                   </Select>
@@ -150,10 +210,24 @@ const ProductAdd = () => {
             <Form.Item label="Kategoriya" style={{ gridColumn: "span 2" }}>
               <div style={{ display: "flex", gap: 16, width: "100%" }}>
                 <Form.Item name="category" rules={[{ required: true }]} noStyle>
-                  <Select placeholder="Kategoriya" style={{ width: "100%" }}>
-                    <Select.Option value="688cab0f66ac4bb5a48e7651">
-                      Ichimliklar
-                    </Select.Option>
+                  <Select
+                    onChange={(id) => {
+                      const category = categories.find((cat) => cat._id === id);
+                      setSelectedCategory(category);
+                      form.setFieldsValue({
+                        category: id,
+                        subcategory: undefined,
+                      });
+                    }}
+                    value={form.getFieldValue("category")}
+                    placeholder="Kategoriya"
+                    style={{ width: "100%" }}
+                  >
+                    {categories.map((item) => (
+                      <Select.Option key={item._id} value={item._id}>
+                        {item.category}
+                      </Select.Option>
+                    ))}
                   </Select>
                 </Form.Item>
 
@@ -162,15 +236,21 @@ const ProductAdd = () => {
                   rules={[{ required: true }]}
                   noStyle
                 >
-                  <Select placeholder="Subkategoriya" style={{ width: "100%" }}>
-                    <Select.Option value="688cac0c66ac4bb5a48e7655">
-                      Gazli ichimliklar
-                    </Select.Option>
+                  <Select
+                    disabled={!selectedCategory}
+                    placeholder="Subkategoriya"
+                    style={{ width: "100%" }}
+                  >
+                    {selectedCategory?.subcategories?.map((item) => (
+                      <Select.Option value={item._id}>
+                        {item.subcategory}
+                      </Select.Option>
+                    ))}
                   </Select>
                 </Form.Item>
               </div>
             </Form.Item>
-                  <Form.Item label="Qo'shimcha ma'lumotlar">
+            <Form.Item label="Qo'shimcha ma'lumotlar">
               <Space.Compact style={{ width: "100%" }}>
                 <Input
                   value={newAdditional}
@@ -203,6 +283,8 @@ const ProductAdd = () => {
                 ))}
               </div>
             </Form.Item>
+          </div>
+          <div className="product-add-grid">
             <Form.Item
               style={{ gridColumn: "span 2", marginBottom: 0 }}
               label={
@@ -263,30 +345,81 @@ const ProductAdd = () => {
                 </div>
               )}
             </Form.Item>
-          </div>
-          <div className="product-add-grid">
-      
+            <br />
+            {!isEdit && (
+              <Form.Item label="Rasmlar">
+                <Upload
+                  listType="picture-card"
+                  accept=".png,.jpg,.jpeg"
+                  multiple
+                  fileList={fileList}
+                  beforeUpload={() => false}
+                  onChange={handleFileChange}
+                  itemRender={(originNode, file, currFileList, actions) => {
+                    const index = currFileList.findIndex(
+                      (f) => f.uid === file.uid
+                    );
 
-            <Form.Item label="Rasmlar">
-              <Upload
-                listType="picture-card"
-                multiple
-                fileList={fileList}
-                beforeUpload={() => false}
-                onChange={handleFileChange}
-              >
-                {fileList.length < 8 && (
-                  <div>
-                    <PlusOutlined />
-                    <div style={{ marginTop: 8 }}>Yuklash</div>
-                  </div>
-                )}
-              </Upload>
-            </Form.Item>
+                    const styledNode =
+                      index === 0
+                        ? cloneElement(originNode, {
+                            style: {
+                              ...originNode.props.style,
+                              border: "1px solid #1677ff",
+                            },
+                          })
+                        : originNode;
 
+                    return (
+                      <div style={{ position: "relative" }}>
+                        {styledNode}
+
+                        <div
+                          style={{
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                            width: "100%",
+                            height: "100%",
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "space-between",
+                            padding: 4,
+                            backgroundColor: "rgba(0,0,0,0)",
+                          }}
+                        >
+                          <div style={{ textAlign: "right", color: "#fff" }}>
+                            {index !== 0 && (
+                              <Button
+                                size="small"
+                                onClick={() => {
+                                  const newList = [...currFileList];
+                                  const selected = newList.splice(index, 1)[0];
+                                  newList.unshift(selected);
+                                  setFileList(newList);
+                                }}
+                              >
+                                <MdOutlinePreview />
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }}
+                >
+                  {fileList.length < 8 && (
+                    <div>
+                      <PlusOutlined />
+                      <div style={{ marginTop: 8 }}>Yuklash</div>
+                    </div>
+                  )}
+                </Upload>
+              </Form.Item>
+            )}
             <Form.Item>
               <Button type="primary" htmlType="submit">
-                Kiritish
+                Saqlash
               </Button>
             </Form.Item>
           </div>

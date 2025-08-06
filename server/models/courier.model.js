@@ -6,6 +6,10 @@ const CourierSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    courier_login: {
+      type: String,
+      required: true,
+    },
     courier_phone: {
       type: String,
       required: true,

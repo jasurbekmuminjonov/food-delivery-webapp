@@ -19,7 +19,7 @@ const ProductSchema = new mongoose.Schema(
     unit: {
       type: String,
       required: true,
-      enum: ["dona", "gr", "litr", "sm"],
+      enum: ["dona", "kg", "litr", "sm"],
     },
     unit_description: {
       type: String,

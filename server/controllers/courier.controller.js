@@ -7,15 +7,32 @@ const {
 
 exports.createCourier = async (req, res) => {
   try {
-    const { courier_login, courier_password } = req.body;
+    const { courier_login, courier_password, courier_phone } = req.body;
+
+    const phoneRegex = /^\+998\d{9}$/;
+    if (!phoneRegex.test(courier_phone)) {
+      return res.status(400).json({
+        message: "Telefon raqami noto'g'ri formatda",
+      });
+    }
+
     const courier = await Courier.findOne({ courier_login });
     if (courier) {
       return res.status(400).json({
-        message: `${courier_login} telefon raqami bilan kuryer avval qo'shilgan`,
+        message: `${courier_login} login bilan kuryer avval qo'shilgan`,
       });
     }
+
+    const phoneCourier = await Courier.findOne({ courier_phone });
+    if (phoneCourier) {
+      return res.status(400).json({
+        message: `${courier_phone} tel raqam bilan kuryer avval qo'shilgan`,
+      });
+    }
+
     const hashed = await hashPassword(courier_password);
-    courier_password = hashed;
+    req.body.courier_password = hashed;
+
     await Courier.create(req.body);
     res.status(200).json({ message: "Kuryer yaratildi" });
   } catch (err) {
@@ -37,11 +54,19 @@ exports.getCouriers = async (req, res) => {
 exports.editCourier = async (req, res) => {
   try {
     const { id } = req.params;
-    const { courier_name, courier_login, courier_gender } = req.body;
+    const { courier_name, courier_login, courier_gender, courier_phone } =
+      req.body;
+    const phoneRegex = /^\+998\d{9}$/;
+    if (!phoneRegex.test(courier_phone)) {
+      return res.status(400).json({
+        message: "Telefon raqami noto'g'ri formatda",
+      });
+    }
     await Courier.findByIdAndUpdate(id, {
       courier_name,
       courier_login,
       courier_gender,
+      courier_phone,
     });
     res.status(200).json({ message: "Kuryer tahrirlandi" });
   } catch (err) {
@@ -53,7 +78,7 @@ exports.editCourier = async (req, res) => {
 exports.editCourierPassword = async (req, res) => {
   try {
     const { id } = req.params;
-    const { courier_password } = req.body;
+    const {    } = req.body;
     const hashed = await hashPassword(courier_password);
     await Courier.findByIdAndUpdate(id, { courier_password: hashed });
     res.status(200).json({ message: "Kuryerning paroli tahrirlandi" });
