@@ -205,7 +205,9 @@ exports.createDiscountForProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const { percent } = req.body;
-    await Product.findById(id, { $push: { discount_log: { percent } } });
+    await Product.findByIdAndUpdate(id, {
+      $push: { discount_log: { percent } },
+    });
     res.status(200).json({ message: "Tovar uchun chegirma qo'shildi" });
   } catch (err) {
     console.log(err.message);
@@ -230,7 +232,7 @@ exports.removeDiscountInProduct = async (req, res) => {
       return res.status(400).json({ message: "Chegirma topilmadi" });
     }
 
-    editingDiscount.status = "inactive";    
+    editingDiscount.status = "inactive";
     editingDiscount.end_date = new Date();
     await editingProduct.save();
 
@@ -298,5 +300,25 @@ exports.searchProducts = async (req, res) => {
   } catch (err) {
     console.log(err.message);
     res.status(500).json({ message: "Serverda xatolik", err });
+  }
+};
+exports.toggleProductStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await Product.findById(id);
+    if (!product) {
+      return res.status(404).json({ message: "Tovar topilmadi" });
+    }
+
+    const newStatus =
+      product.status === "available" ? "not_available" : "available";
+
+    await Product.findByIdAndUpdate(id, { $set: { status: newStatus } });
+
+    res.status(200).json({ message: "Tovar holati o'zgartirildi" });
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };

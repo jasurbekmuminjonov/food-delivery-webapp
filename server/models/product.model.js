@@ -33,6 +33,11 @@ const ProductSchema = new mongoose.Schema(
       type: [String],
       default: [],
     },
+    status: {
+      type: String,
+      enum: ["available", "not_available"],
+      default: "available",
+    },
     selling_price: {
       type: Number,
       required: true,
@@ -131,7 +136,6 @@ const ProductSchema = new mongoose.Schema(
         uglevod: null,
       },
     },
-
   },
   { timestamps: true }
 );

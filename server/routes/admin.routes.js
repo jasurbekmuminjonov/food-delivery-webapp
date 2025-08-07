@@ -18,6 +18,7 @@ const {
   removeDiscountInProduct,
   createStockForProduct,
   searchProducts,
+  toggleProductStatus,
 } = require("../controllers/product.controller");
 
 const {
@@ -55,6 +56,7 @@ rt.post("/product/discount/:id", createDiscountForProduct);
 rt.delete("/product/discount", removeDiscountInProduct);
 rt.post("/product/stock/:id", createStockForProduct);
 rt.get("/product/search", searchProducts);
+rt.put("/product/status/:id", toggleProductStatus);
 
 rt.post("/category/create", createCategory);
 rt.post("/subcategory/create", createSubcategory);

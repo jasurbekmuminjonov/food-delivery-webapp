@@ -86,6 +86,13 @@ export const productApi = api.injectEndpoints({
       }),
       providesTags: ["Product"],
     }),
+    toggleProductStatus: builder.mutation({
+      query: (id) => ({
+        url: `/product/status/${id}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["Product"],
+    }),
   }),
 });
 
@@ -100,4 +107,5 @@ export const {
   useRemoveDiscountInProductMutation,
   useCreateStockForProductMutation,
   useSearchProductsQuery,
+  useToggleProductStatusMutation,
 } = productApi;

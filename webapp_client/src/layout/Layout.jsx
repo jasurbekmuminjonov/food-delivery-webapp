@@ -1,19 +1,15 @@
-import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 
 const Layout = () => {
-  let telegramId;
-  useEffect(() => {
-    if (window.Telegram.WebApp) {
-      telegramId = window.Telegram.WebApp.initDataUnsafe?.user?.id;
-      if (telegramId) {
-        localStorage.setItem("telegram_id", telegramId);
-        console.log("Telegram ID:", telegramId);
-      }
-    }
-  }, []);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+
+  const start = queryParams.get("start");
   return (
     <div className="layout">
-      <p>{telegramId}</p>
+      <p>{localStorage.getItem("telegram_id")}</p>
+      <p>{start}</p>
+      <p>{window.Telegram && window.Telegram.WebApp.initDataUnsafe.user.id}</p>
     </div>
   );
 };

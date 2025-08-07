@@ -1,15 +1,20 @@
 import { useMemo, useRef, useState } from "react";
 import {
+  useCreateDiscountForProductMutation,
   useDeleteImageInProductMutation,
   useGetProductsQuery,
   useInsertImageToProductMutation,
+  useRemoveDiscountInProductMutation,
   useSetImageToMainMutation,
+  useToggleProductStatusMutation,
 } from "../context/services/product.service";
 import {
   Badge,
   Button,
   Card,
+  Form,
   Input,
+  InputNumber,
   Modal,
   notification,
   Popover,
@@ -23,6 +28,7 @@ import { MdEdit } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { FaXmark } from "react-icons/fa6";
 import { RiImageAddLine } from "react-icons/ri";
+import { TbRosetteDiscount, TbRosetteDiscountOff } from "react-icons/tb";
 
 const Products = () => {
   const { data: products = [], isLoading } = useGetProductsQuery();
@@ -33,6 +39,9 @@ const Products = () => {
   const [insertImageToProduct] = useInsertImageToProductMutation();
   const [insertingProduct, setInsertingProduct] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [createDiscount] = useCreateDiscountForProductMutation();
+  const [removeDiscount] = useRemoveDiscountInProductMutation();
+  const [toggleStatus] = useToggleProductStatusMutation();
   const navigate = useNavigate();
   const fileRef = useRef();
 
@@ -48,8 +57,48 @@ const Products = () => {
       dataIndex: "product_name",
     },
     {
-      title: "Jami miqdori",
-      dataIndex: "total_stock",
+      title: "Holati",
+      dataIndex: "status",
+      render: (text, record) =>
+        text === "available" ? (
+          <Tag
+            style={{ cursor: "pointer" }}
+            onClick={async () => {
+              try {
+                const res = await toggleStatus(record._id).unwrap();
+                notification.success({ message: res.message, description: "" });
+              } catch (err) {
+                console.log(err);
+                notification.error({
+                  message: err.data.message,
+                  description: "",
+                });
+              }
+            }}
+            color="green"
+          >
+            Mavjud
+          </Tag>
+        ) : (
+          <Tag
+            style={{ cursor: "pointer" }}
+            onClick={async () => {
+              try {
+                const res = await toggleStatus(record._id).unwrap();
+                notification.success({ message: res.message, description: "" });
+              } catch (err) {
+                console.log(err);
+                notification.error({
+                  message: err.data.message,
+                  description: "",
+                });
+              }
+            }}
+            color="red"
+          >
+            Mavjud emas
+          </Tag>
+        ),
     },
     {
       title: "Sotish narxi",
@@ -73,6 +122,18 @@ const Products = () => {
     {
       title: "Birlik qo'shimchasi",
       dataIndex: "unit_description",
+    },
+    {
+      title: "Aktiv chegirma",
+      dataIndex: "discount_log",
+      render: (text) => {
+        const activeDiscount = text.find((i) => i.status === "active");
+        return activeDiscount ? (
+          <Tag color="red">-{activeDiscount.percent}%</Tag>
+        ) : (
+          <Tag color="green">0%</Tag>
+        );
+      },
     },
     {
       title: "Tovar tavsifi",
@@ -208,6 +269,71 @@ const Products = () => {
               fileRef.current.click();
             }}
             icon={<RiImageAddLine />}
+          />
+          <Popover
+            trigger="click"
+            content={() => (
+              <Form
+                layout="vertical"
+                onFinish={async (values) => {
+                  try {
+                    const res = await createDiscount({
+                      id: record._id,
+                      body: { percent: Number(values.percent) },
+                    }).unwrap();
+                    notification.success({ message: res.message });
+                  } catch (err) {
+                    console.log(err);
+                    notification.error({
+                      message: err.data.message,
+                      description: "",
+                    });
+                  }
+                }}
+              >
+                <Form.Item
+                  name="percent"
+                  rules={[{ required: true, message: "Chegirma foizi" }]}
+                  label="Chegirma foizda"
+                >
+                  <InputNumber style={{ width: "100%" }} />
+                </Form.Item>
+                <Form.Item>
+                  <Button htmlType="submit">Saqlash</Button>
+                </Form.Item>
+              </Form>
+            )}
+          >
+            <Button
+              disabled={record.discount_log.find((i) => i.status === "active")}
+              icon={<TbRosetteDiscount size={20} />}
+            />
+          </Popover>
+          <Button
+            disabled={!record.discount_log.find((i) => i.status === "active")}
+            icon={<TbRosetteDiscountOff size={20} />}
+            onClick={async () => {
+              try {
+                const activeDiscountIndex = record.discount_log.find(
+                  (i) => i.status === "active"
+                )._id;
+
+                if (activeDiscountIndex === -1) return;
+
+                const res = await removeDiscount({
+                  product: record._id,
+                  discount_index: activeDiscountIndex,
+                }).unwrap();
+
+                notification.success({ message: res.message });
+              } catch (err) {
+                console.log(err);
+                notification.error({
+                  message: err?.data?.message || "Xatolik yuz berdi",
+                  description: "",
+                });
+              }
+            }}
           />
         </Space>
       ),
