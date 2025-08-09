@@ -27,7 +27,7 @@ const CategoryAdd = () => {
         await createSubcategory(payload).unwrap();
         notification.success({ message: "Subkategoriya qo'shildi" });
       }
-      form.resetFields();
+      // form.resetFields();
     } catch (err) {
       notification.error({
         message: "Xatolik",

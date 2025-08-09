@@ -1,15 +1,22 @@
-import { useLocation } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+import { useGetCategoriesQuery } from "../context/services/category.service";
+import { useGetProductsQuery } from "../context/services/product.service";
+import Home from "../pages/main/Home";
+import LocationSearch from "../pages/main/Places";
+import Map from "../pages/main/Map";
 
 const Layout = () => {
-  const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-
-  const start = queryParams.get("start");
+  const { data: products = [], isLoading: productLoading } =
+    useGetProductsQuery();
+  const { data: categories = [], isLoading: categoryLoading } =
+    useGetCategoriesQuery();
   return (
     <div className="layout">
-      <p>{localStorage.getItem("telegram_id")}</p>
-      <p>{start}</p>
-      <p>{window.Telegram && window.Telegram.WebApp.initDataUnsafe.user.id}</p>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/places" element={<LocationSearch />} />
+        <Route path="/map" element={<Map />} />
+      </Routes>
     </div>
   );
 };

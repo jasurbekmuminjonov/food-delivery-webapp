@@ -228,10 +228,10 @@ const Products = () => {
         const dataSource = [
           {
             key: "1",
-            kkal: text.kkal,
-            protein: text.protein,
-            fat: text.fat,
-            uglevod: text.uglevod,
+            kkal: text?.kkal || "-",
+            protein: text?.protein || "-",
+            fat: text?.fat || "-",
+            uglevod: text?.uglevod || "-",
           },
         ];
 

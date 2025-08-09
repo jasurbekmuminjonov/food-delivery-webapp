@@ -25,7 +25,11 @@ exports.createProduct = async (req, res) => {
       "nutritional_value.fat": fat,
       "nutritional_value.uglevod": uglevod,
     } = req.body;
-
+    const hasNutritionalValue =
+      kkal !== undefined ||
+      protein !== undefined ||
+      fat !== undefined ||
+      uglevod !== undefined;
     const parsedProduct = {
       product_name,
       category,
@@ -41,12 +45,14 @@ exports.createProduct = async (req, res) => {
         : additionals
         ? [additionals]
         : [],
-      nutritional_value: {
-        kkal: Number(kkal),
-        protein: Number(protein),
-        fat: Number(fat),
-        uglevod: Number(uglevod),
-      },
+      nutritional_value: hasNutritionalValue
+        ? {
+            kkal: kkal !== undefined ? Number(kkal) || null : null,
+            protein: protein !== undefined ? Number(protein) || null : null,
+            fat: fat !== undefined ? Number(fat) || null : null,
+            uglevod: uglevod !== undefined ? Number(uglevod) || null : null,
+          }
+        : null,
       image_log: productImages,
     };
 

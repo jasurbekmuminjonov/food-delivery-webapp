@@ -114,19 +114,19 @@ const ProductSchema = new mongoose.Schema(
       type: {
         kkal: {
           type: Number,
-          required: true,
+          default: null,
         },
         fat: {
           type: Number,
-          required: true,
+          default: null,
         },
         protein: {
           type: Number,
-          required: true,
+          default: null,
         },
         uglevod: {
           type: Number,
-          required: true,
+          default: null,
         },
       },
       default: {
