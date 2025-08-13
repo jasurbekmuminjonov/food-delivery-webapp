@@ -74,7 +74,6 @@ const ProductAdd = () => {
         setAdditionals(additionals);
         setShowNutrition(!!nutritional_value);
         const cat = categories.find((cat) => cat._id === category._id);
-        console.log(cat);
 
         setSelectedCategory(cat);
       }
@@ -175,7 +174,7 @@ const ProductAdd = () => {
                     <Select.Option value="dona">Dona</Select.Option>
                     <Select.Option value="kg">Kilogramm</Select.Option>
                     <Select.Option value="litr">Litr</Select.Option>
-                    <Select.Option value="sm">Santimetr</Select.Option>
+                    <Select.Option value="m">Metr</Select.Option>
                   </Select>
                 </Form.Item>
 

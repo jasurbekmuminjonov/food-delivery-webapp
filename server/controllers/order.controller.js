@@ -5,7 +5,9 @@ const Product = require("../models/product.model");
 exports.createOrder = async (req, res) => {
   try {
     const { telegram_id } = req.user;
-    const { products } = req.body;
+    console.log(req.user);
+
+    const { products, delivery_fee } = req.body;
     const user = await User.findOne({ telegram_id });
     if (!user) {
       return res.status(400).json({
@@ -23,7 +25,7 @@ exports.createOrder = async (req, res) => {
       });
     }
 
-    req.body.total_price = totalPrice;
+    req.body.total_price = totalPrice + delivery_fee;
     req.body.user_id = user._id;
     await Order.create(req.body);
     res
@@ -55,7 +57,7 @@ exports.getOrdersByUser = async (req, res) => {
           "Avtorizatsiya xatosi. Telegram botga /start buyrug'ini bering",
       });
     }
-    const orders = await Order.find({ user_id: user._id });
+    const orders = await Order.find({ user_id: user._id }).populate("courier_id");
     res.status(200).json(orders);
   } catch (err) {
     console.log(err.message);

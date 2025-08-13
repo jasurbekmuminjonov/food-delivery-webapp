@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css2?family=Roboto:wght@100;200;300;400;500;600;800;900&display=swap);
+@import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;800;900&display=swap);
 
 * {
   margin: 0;
@@ -6,6 +6,11 @@
   box-sizing: border-box;
   text-decoration: none;
 }
+
+body {
+  font-family: "Poppins", sans-serif;
+}
+
 input,
 textarea,
 button,
@@ -14,10 +19,6 @@ select {
   outline: none;
   cursor: pointer;
 }
-body {
-  font-family: "Roboto", sans-serif;
-}
-
 .login {
   width: 100vw;
   height: 100vh;
@@ -29,7 +30,6 @@ body {
   width: 300px;
   display: flex;
   flex-direction: column;
-  /* gap: 15px; */
   padding-inline: 15px;
   padding-block: 15px;
   border: 1px solid #ccc;

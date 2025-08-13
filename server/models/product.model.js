@@ -19,12 +19,16 @@ const ProductSchema = new mongoose.Schema(
     unit: {
       type: String,
       required: true,
-      enum: ["dona", "kg", "litr", "sm"],
+      enum: ["dona", "kg", "litr", "m"],
     },
     unit_description: {
       type: String,
       default: "",
     },
+    starting_quantity: {
+      type: Number,
+      required: true,
+    },  
     expiration: {
       type: Number,
       default: null,

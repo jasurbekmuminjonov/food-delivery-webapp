@@ -8,7 +8,7 @@ import { IoLocationSharp, IoSearch } from "react-icons/io5";
 import { PiArrowCounterClockwiseBold } from "react-icons/pi";
 import gift from "../../assets/gift.png";
 import { useGetProductsQuery } from "../../context/services/product.service";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import vegetables from "../../assets/images/vegetables.png";
 import fruits from "../../assets/images/fruits.png";
 import cheese from "../../assets/images/cheese.png";
@@ -20,12 +20,30 @@ import yogurt from "../../assets/images/yogurt.png";
 import aksiya from "../../assets/aksiya.png";
 import gift_ios from "../../assets/gift_ios.png";
 import { useNavigate } from "react-router-dom";
-import Skeleton from "react-loading-skeleton";
+import Card from "../../components/Card";
+import { useLazyGetUserByQueryQuery } from "../../context/services/user.service";
+import { BsBasket3 } from "react-icons/bs";
+import { useGetOrdersQuery } from "../../context/services/order.service";
+import { MdDeliveryDining } from "react-icons/md";
 const Home = () => {
   const { data: products = [] } = useGetProductsQuery();
   const [aksiyaModal, setAksiyaModal] = useState(false);
+  const { data: orders = [] } = useGetOrdersQuery();
+
   const [closing, setClosing] = useState(false);
   const navigate = useNavigate();
+  const [getUser, { data: userData = {} }] = useLazyGetUserByQueryQuery();
+
+  useEffect(() => {
+    getUser(localStorage.getItem("telegram_id"));
+  }, []);
+
+  const [basket, setBasket] = useState(
+    JSON.parse(localStorage.getItem("basket")) || []
+  );
+  const searchRef = useRef(null);
+
+  const [showSticky, setShowSticky] = useState(false);
 
   const closeModal = () => {
     setClosing(true);
@@ -34,6 +52,24 @@ const Home = () => {
       setClosing(false);
     }, 200);
   };
+
+  useEffect(() => {
+    const el = searchRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        setShowSticky(entry.intersectionRatio === 0);
+      },
+      {
+        root: null,
+        threshold: [0, 1],
+      }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
   const discountedProducts = useMemo(() => {
     const discounted = products.filter((item) =>
       item.discount_log.some((d) => d.status === "active")
@@ -68,23 +104,37 @@ const Home = () => {
           </div>
         </div>
       )}
-      <p onClick={() => navigate("/places")}>
+      <p
+        onClick={() => {
+          !userData?.default_address?.lat || !userData?.default_address?.long
+            ? navigate("/places")
+            : navigate(
+                `/map?lat=${userData?.default_address?.lat}&long=${userData?.default_address?.long}`
+              );
+        }}
+      >
         <IoLocationSharp />
-        Manzilni tanlash
+        {!userData?.default_address?.lat || !userData?.default_address?.long
+          ? "Manzilni tanlash"
+          : "Manzil tanlangan"}
         <FaChevronRight />
       </p>
-      <div className="search">
+      <div
+        className="search"
+        ref={searchRef}
+        onClick={() => navigate("/search")}
+      >
         <IoSearch size={20} />
         <p>Do'kondan topish</p>
       </div>
       <div className="container">
-        <div>
+        <div onClick={() => navigate("/discount")}>
           <button>
             <FaPercent size={25} color="orange" />
           </button>
           <b>Chegirmalar</b>
         </div>
-        <div>
+        <div onClick={() => navigate("/wishes")}>
           <button>
             <FaRegHeart size={25} color="red" />
           </button>
@@ -115,64 +165,17 @@ const Home = () => {
       <div className="discount">
         <div className="discount-head">
           <b>Chegirmadagi tovarlar</b>
-          <button>
+          <button onClick={() => navigate("/discount")}>
             Hammasi <FaChevronRight />
           </button>
         </div>
         <div className="discount-body">
           {discountedProducts.length > 0 ? (
-            discountedProducts?.slice(0, 4)?.map((item) => (
-              <div className="card">
-                <div className="card-image">
-                  <img
-                    src={item.image_log.find((i) => i.isMain)?.image_url}
-                    alt=""
-                  />
-                </div>
-                <div className="card-title">
-                  <div className="tags">
-                    <p
-                      style={{
-                        background: "red",
-                      }}
-                    >
-                      -
-                      {
-                        item.discount_log.find((i) => i.status === "active")
-                          ?.percent
-                      }
-                      %
-                    </p>
-                    {item.additionals.map((i) => (
-                      <p
-                        style={{
-                          background: "#1677FF",
-                        }}
-                      >
-                        {i}
-                      </p>
-                    ))}
-                  </div>
-                  <b>
-                    {Number(
-                      (
-                        item.selling_price -
-                        (item.selling_price / 100) *
-                          item.discount_log.find((i) => i.status === "active")
-                            .percent
-                      ).toFixed()
-                    ).toLocaleString("ru-RU")}{" "}
-                    so'm
-                  </b>
-                  <span>
-                    {item.selling_price?.toLocaleString("ru-RU")} so'm
-                  </span>
-                  <p>{item.product_name}</p>
-                  <h5>{item.unit_description}</h5>
-                  <button>Savatga</button>
-                </div>
-              </div>
-            ))
+            discountedProducts
+              ?.slice(0, 4)
+              ?.map((item) => (
+                <Card basket={basket} setBasket={setBasket} item={item} />
+              ))
           ) : (
             <div className="card"></div>
           )}
@@ -200,54 +203,7 @@ const Home = () => {
         </div>
         <div className="discount-body">
           {discountedProducts?.slice(0, 4)?.map((item) => (
-            <div className="card">
-              <div className="card-image">
-                <img
-                  src={item.image_log.find((i) => i.isMain)?.image_url}
-                  alt=""
-                />
-              </div>
-              <div className="card-title">
-                <div className="tags">
-                  <p
-                    style={{
-                      background: "red",
-                    }}
-                  >
-                    -
-                    {
-                      item.discount_log.find((i) => i.status === "active")
-                        ?.percent
-                    }
-                    %
-                  </p>
-                  {item.additionals.map((i) => (
-                    <p
-                      style={{
-                        background: "#1677FF",
-                      }}
-                    >
-                      {i}
-                    </p>
-                  ))}
-                </div>
-                <b>
-                  {Number(
-                    (
-                      item.selling_price -
-                      (item.selling_price / 100) *
-                        item.discount_log.find((i) => i.status === "active")
-                          .percent
-                    ).toFixed()
-                  ).toLocaleString("ru-RU")}{" "}
-                  so'm
-                </b>
-                <span>{item.selling_price?.toLocaleString("ru-RU")} so'm</span>
-                <p>{item.product_name}</p>
-                <h5>{item.unit_description}</h5>
-                <button>Savatga</button>
-              </div>
-            </div>
+            <Card basket={basket} setBasket={setBasket} item={item} />
           ))}
         </div>
       </div>
@@ -279,6 +235,62 @@ const Home = () => {
             <img src={qatiq} alt="" />
           </div>
         </div>
+      </div>
+      <div
+        className="search-sticky"
+        style={
+          showSticky
+            ? { transform: "translateY(0px)" }
+            : { transform: "translateY(-62px)" }
+        }
+      >
+        <div className="search" onClick={() => navigate("/search")}>
+          <IoSearch size={20} />
+          <p>Do'kondan topish</p>
+        </div>
+      </div>
+      <div className="basket-sticky">
+        <div>
+          <button>
+            <BsBasket3 size={20} />
+            <span>{basket.length}</span>
+          </button>
+          {orders.filter(
+            (o) =>
+              o.order_status === "preparing" || o.order_status === "delivering"
+          ).length > 0 && (
+            <button onClick={() => navigate("/order")}>
+              <MdDeliveryDining size={30} />
+            </button>
+          )}
+        </div>
+        <button onClick={() => navigate("/basket")}>
+          {basket.length < 1
+            ? "Savat bo'sh"
+            : Number(
+                basket
+                  .reduce((acc, item) => {
+                    const product = products.find(
+                      (i) => i._id === item.product_id
+                    );
+
+                    if (!product) return acc;
+
+                    const discount = product.discount_log?.find(
+                      (d) => d.status === "active"
+                    );
+
+                    let price = product.selling_price;
+
+                    if (discount) {
+                      price = price - (price / 100) * discount.percent;
+                    }
+
+                    return acc + price * item.quantity;
+                  }, 0)
+                  .toFixed()
+              ).toLocaleString("ru-RU") + " so'm"}
+        </button>
       </div>
     </div>
   );

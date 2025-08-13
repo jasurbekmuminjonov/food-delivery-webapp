@@ -25,11 +25,19 @@ export const productApi = api.injectEndpoints({
     //   }),
     //   invalidatesTags: ["Product"],
     // }),
+    // deleteProduct: builder.mutation({
+    //   query: (id) => ({
+    //     url: `/product/delete/${id}`,
+    //     method: "DELETE",
+    //   }),
+    //   invalidatesTags: ["Product"],
+    // }),
   }),
 });
 
 export const {
-//   useCreateProductMutation,
+  //   useCreateProductMutation,
   useGetProductsQuery,
-//   useEditProductMutation,
+  //   useEditProductMutation,
+  //   useDeleteProductMutation,
 } = productApi;

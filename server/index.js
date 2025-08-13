@@ -7,7 +7,7 @@ const path = require("path");
 const tokenAuth = require("./middlewares/token.auth");
 const basicAuth = require("./middlewares/basic.auth");
 const app = express();
-app.use(cors());
+app.use(cors()); 
 app.use("/images", express.static(path.join(__dirname, "uploads")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

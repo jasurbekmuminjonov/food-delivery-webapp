@@ -36,6 +36,7 @@ exports.createProduct = async (req, res) => {
       subcategory,
       unit,
       unit_description,
+      starting_quantity: unit === "dona" ? 1 : 0.5,
       expiration: Number(expiration),
       selling_price: Number(selling_price),
       product_description,
@@ -64,7 +65,6 @@ exports.createProduct = async (req, res) => {
     res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
-
 exports.getProducts = async (req, res) => {
   try {
     const products = await Product.find()
@@ -76,7 +76,6 @@ exports.getProducts = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
-
 exports.editProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -129,7 +128,6 @@ exports.editProduct = async (req, res) => {
     res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
-
 exports.inserImageToProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -144,7 +142,6 @@ exports.inserImageToProduct = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
-
 exports.deleteImageInProduct = async (req, res) => {
   try {
     const { product, image } = req.query;
@@ -175,7 +172,6 @@ exports.deleteImageInProduct = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
-
 exports.setImageToMain = async (req, res) => {
   try {
     const { product, image } = req.query;
@@ -206,7 +202,6 @@ exports.setImageToMain = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
-
 exports.createDiscountForProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -220,7 +215,6 @@ exports.createDiscountForProduct = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
-
 exports.removeDiscountInProduct = async (req, res) => {
   try {
     const { product, discount } = req.query;
@@ -248,7 +242,6 @@ exports.removeDiscountInProduct = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
-
 exports.createStockForProduct = async (req, res) => {
   try {
     const { id } = req.params;
@@ -263,7 +256,6 @@ exports.createStockForProduct = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
-
 exports.searchProducts = async (req, res) => {
   try {
     const { q } = req.query;

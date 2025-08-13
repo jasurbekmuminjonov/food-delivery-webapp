@@ -18,16 +18,15 @@ const basicAuth = (req, res, next) => {
   }
 
   try {
-    const decoded = Buffer.from(credentials, "base64").toString("utf8"); // "telegram_id:parol"
-    const [telegram_id] = decoded.split(":"); // faqat telegram_id olamiz
+    const decoded = JSON.parse(atob(credentials));
 
-    if (!telegram_id) {
+    if (!decoded?.telegram_id) {
       return res.status(401).json({
         message: "Avtorizatsiya ma'lumotlarida telegram_id mavjud emas",
       });
     }
 
-    req.user = { telegram_id };
+    req.user = decoded;
     next();
   } catch (err) {
     res.status(401).json({ message: "Avtorizatsiya ma'lumotlari noto'g'ri" });

@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { LoadScript } from "@react-google-maps/api";
-import { IoLocationSharp } from "react-icons/io5";
-import maps from "../../assets/maps.png";
+import { IoLocationOutline, IoLocationSharp } from "react-icons/io5";
 import { useNavigate } from "react-router-dom";
 const libraries = ["places"];
 
@@ -94,13 +93,41 @@ function LocationSearch() {
             style={{ width: "300px", height: "40px", fontSize: "16px" }}
           />
           <button onClick={() => navigate("/map")}>
-            <img width={"20px"} src={maps} alt="" />
+            {/* <img width={"20px"} src={maps} alt="" /> */}
+            <IoLocationOutline size={25} />
           </button>
         </div>
         <div className="suggestions">
           {suggestions.length > 0 &&
             suggestions.map((item) => (
-              <div className="suggestion" key={item.place_id}>
+              <div
+                className="suggestion"
+                key={item.place_id}
+                onClick={() => {
+                  const placesService =
+                    new window.google.maps.places.PlacesService(
+                      document.createElement("div")
+                    );
+
+                  placesService.getDetails(
+                    { placeId: item.place_id, fields: ["geometry"] },
+                    (result, status) => {
+                      if (
+                        status ===
+                          window.google.maps.places.PlacesServiceStatus.OK &&
+                        result?.geometry?.location
+                      ) {
+                        navigate(
+                          `/map?lat=${result.geometry.location.lat()}&long=${result.geometry.location.lng()}`
+                        );
+                      } else {
+                        console.error("Location not found");
+                      }
+                    }
+                  );
+                }}
+                style={{ cursor: "pointer" }}
+              >
                 <IoLocationSharp />
                 <div>
                   <p

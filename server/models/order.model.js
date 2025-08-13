@@ -22,6 +22,15 @@ const OrderSchema = new mongoose.Schema(
       ],
       default: [],
     },
+    delivery_fee: {
+      type: Number,
+      default: 0,
+    },
+    bonus: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
     total_price: {
       type: Number,
       required: true,
@@ -30,6 +39,11 @@ const OrderSchema = new mongoose.Schema(
       type: String,
       enum: ["preparing", "delivering", "completed", "canceled"],
       default: "preparing",
+    },
+    requested_courier: {
+      type: String,
+      required: true,
+      enum: ["male", "female"],
     },
     created_date: {
       type: Date,

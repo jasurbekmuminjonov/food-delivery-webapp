@@ -15,14 +15,16 @@ bot.onText(/\/start/, async (msg) => {
   const telegramId = msg.from.id;
 
   try {
-    const response = await axios.get(`${GET_URL}?telegram_id=${telegramId}`);
+    await axios.get(`${GET_URL}?telegram_id=${telegramId}`);
     bot.sendMessage(chatId, "Boshlash uchun quyidagi tugmani bosing:", {
       reply_markup: {
         inline_keyboard: [
           [
             {
               text: "Boshlash",
-              url: `https://t.me/FoodDelivery_Uz_Bot/app?start=${telegramId}`,
+              web_app: {
+                url: `https://kwmkqg1t-5173.euw.devtunnels.ms?start=${telegramId}`,
+              },
             },
           ],
         ],
@@ -63,7 +65,11 @@ bot.on("contact", async (msg) => {
 
     userStates[telegramId] = { stage: "awaiting_name" };
 
-    bot.sendMessage(chatId, "Ismingizni kiriting:");
+    bot.sendMessage(chatId, "Ismingizni kiriting:", {
+      reply_markup: {
+        remove_keyboard: true,
+      },
+    });
   }
 });
 
@@ -114,7 +120,9 @@ bot.on("callback_query", async (query) => {
           [
             {
               text: "Boshlash",
-              url: `https://t.me/FoodDelivery_Uz_Bot/app?start=${telegramId}`,
+              web_app: {
+                url: `https://kwmkqg1t-5173.euw.devtunnels.ms?start=${telegramId}`,
+              },
             },
           ],
         ],

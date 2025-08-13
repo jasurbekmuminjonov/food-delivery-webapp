@@ -1,8 +1,10 @@
-import React, { useState, useCallback, useRef, useEffect } from "react";
+import { useState, useCallback, useRef, useEffect } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { TiLocationArrowOutline } from "react-icons/ti";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { useCreateUserMutation } from "../../context/services/user.service";
+import { IoSearchOutline } from "react-icons/io5";
 
 const containerStyle = {
   width: "100%",
@@ -15,7 +17,14 @@ const initialCenter = {
 };
 
 const Map = () => {
-  const [position, setPosition] = useState(initialCenter);
+  const [searchParams] = useSearchParams();
+  const lat = searchParams.get("lat");
+  const long = searchParams.get("long");
+  const [createUser, { isLoading }] = useCreateUserMutation();
+  const [position, setPosition] = useState(
+    lat && long ? { lat: Number(lat), lng: Number(long) } : initialCenter
+  );
+  const [zoom, setZoom] = useState(lat && long ? 15 : 10);
   const mapRef = useRef(null);
   const navigate = useNavigate();
 
@@ -83,20 +92,35 @@ const Map = () => {
     gestureHandling: "greedy",
   };
 
+  async function handleSubmit() {
+    try {
+      await createUser({
+        telegram_id: localStorage.getItem("telegram_id"),
+        default_address: { lat: position.lat, long: position.lng },
+      }).unwrap();
+      navigate(-1);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
   return (
     <div className="map-page">
-      <button className="arrow-left" onClick={() => navigate("/")}>
+      <button className="arrow-left" onClick={() => navigate(-1)}>
         <FaArrowLeftLong />
       </button>
+      <button className="places-button" onClick={() => navigate("/places")}>
+        <IoSearchOutline />
+      </button>
       <button className="location" onClick={handleLocationClick}>
-        <TiLocationArrowOutline size={25} />
+        <TiLocationArrowOutline size={25} color="#666666" />
       </button>
       <div className="map-body">
         <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
           <GoogleMap
             mapContainerStyle={containerStyle}
             center={position}
-            zoom={12}
+            zoom={zoom}
             onClick={onMapClick}
             onLoad={onLoad}
             onDragEnd={onDragEnd}
@@ -107,7 +131,7 @@ const Map = () => {
         </LoadScript>
       </div>
       <div className="map-footer">
-        <button>Manzilni tanlash</button>
+        <button onClick={handleSubmit}>Manzilni tanlash</button>
       </div>
     </div>
   );
