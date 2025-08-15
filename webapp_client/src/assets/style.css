@@ -2,19 +2,15 @@
 @import url(https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;800;900&display=swap);
 
 body {
-  font-family: "Poppins", sans-serif;
-  display: flex;
-  justify-content: center;
 }
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
   text-decoration: none;
-}
-button,
-img,
-.no-select {
+  font-family: Poppins !important;
+  user-drag: none;
+  -webkit-user-drag: none;
   user-select: none;
 }
 
@@ -296,6 +292,8 @@ input[type="number"]::-webkit-inner-spin-button {
   flex-direction: column;
   justify-self: center;
   background-color: #fff;
+  border-right: 1px solid #ccc;
+  border-left: 1px solid #ccc;
 }
 .loading-wrapper {
   padding-inline: 15px;
@@ -573,6 +571,9 @@ div::-webkit-scrollbar {
   flex-wrap: wrap;
   gap: 15px;
 }
+.category-penta{
+  
+}
 
 .category-item {
   flex: 0 0 calc(33.333% - 10px);
@@ -614,54 +615,50 @@ div::-webkit-scrollbar {
   background: #fff;
   padding-block: 5px;
   overflow-y: scroll;
-  padding-block-start: 60px;
-  position: relative;
+  padding-inline: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
-.search-input {
-  width: 95%;
+.search-location > div {
+  width: 100%;
   display: flex;
   align-items: center;
-  padding-inline: 5px;
-  height: 50px;
   background-color: #fff;
+  gap: 5px;
+}
+.search-location > div > button {
+  flex-grow: 0.5;
+  height: 40px;
+  border-radius: 15px;
+}
+.search-input {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  height: 50px;
+  background-color: #f0f0f0 !important;
   border-radius: 15px;
   gap: 5px;
-  padding-block: 2px;
-  box-shadow: 2px 2px 8px gray;
-  position: fixed;
-  top: 2px;
-  padding: 0 5px;
-  left: 50%;
-  margin-top: 5px;
-  margin-left: 3px;
-  transform: translateX(-50%);
-  margin-left: auto;
+  max-width: 430px;
 }
 .search-input > input {
-  padding-inline: 5px;
+  width: 100%;
+  padding-inline: 25px;
   height: 100%;
   background: transparent;
-  flex-grow: 1;
-}
-.search-input > button {
-  height: 100%;
-  aspect-ratio: 1 / 1;
-  background: transparent;
-  border-left: 1px solid #ccc;
-  font-size: 12px;
+  font-size: 16px;
 }
 .suggestions {
   width: 100%;
-  height: calc(100% - 50px);
-  padding-inline: 5px;
-  padding-block: 5px;
+  height: calc(100% - 110px);
   display: flex;
   flex-direction: column;
   padding-block-end: 5px;
 }
 .suggestion {
   width: 100%;
-  height: 80px;
+  height: 60px;
   display: flex;
   align-items: center;
   gap: 5px;
@@ -723,19 +720,23 @@ div::-webkit-scrollbar {
 .location {
   position: absolute;
   right: 10px;
-  bottom: 170px;
+  bottom: 150px;
   z-index: 2;
 }
 .map-footer {
   display: flex;
+  flex-direction: column;
+  gap: 5px;
   width: 100%;
   height: 100px;
   flex-grow: 0;
-
+  transition: 0.5s;
   align-items: center;
   justify-content: center;
   background-color: #fff;
   box-shadow: 0px 1px 3px gray;
+  position: absolute;
+  bottom: 0;
 }
 .map-footer > button {
   width: calc(100% - 30px);
@@ -744,10 +745,32 @@ div::-webkit-scrollbar {
   font-size: 18px;
   background-color: var(--brand-color);
   color: #fff;
+  &:disabled {
+    background-color: #e5e5e5;
+    color: #ababab;
+    font-weight: 500;
+    justify-content: center;
+  }
 }
 .map-body {
   width: 100%;
-  height: calc(100% - 100px);
+  transition: 0.5s;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  outline: none;
+  flex: 1;
+}
+.marker {
+  position: absolute;
+  z-index: 2;
+}
+.marker > img {
+  width: 25px;
+  object-fit: contain;
+  transition: 0.3s;
 }
 .modal-container {
   width: 100vw;
@@ -869,22 +892,28 @@ div::-webkit-scrollbar {
   align-items: center;
   justify-content: center;
 }
-.search-sticky {
+.search-sticky-wrapper {
   width: 100%;
-  max-width: 430px;
-  height: 60px;
-  padding-block: 5px;
-  padding-inline: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   position: fixed;
   top: 0;
   left: 0;
+  background-color: transparent;
+  transition: 0.5s;
+}
+.search-sticky {
+  width: 430px;
+  height: 60px;
+  padding-block: 5px;
+  padding-inline: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: #fff;
   border-radius: 0 0 15px 15px;
   box-shadow: 0 0 5px gray;
-  transition: 0.5s;
 }
 .search-sticky > .search {
   justify-content: start;
@@ -916,6 +945,7 @@ div::-webkit-scrollbar {
   z-index: 2;
   background-color: #fff;
   box-shadow: 0 0 5px gray;
+  max-width: 430px;
 }
 .search-container > .search {
   height: 40px;
@@ -994,14 +1024,10 @@ div::-webkit-scrollbar {
   background-color: #fff;
 }
 .product-price {
-  width: 100%;
+  width: 430px;
   height: 75px;
-  position: fixed;
-  bottom: 0;
-  left: 0;
   max-width: 430px;
   border-radius: 15px 15px 0 0;
-  z-index: 3;
   display: flex;
   align-items: center;
   padding-inline: 15px;
@@ -1113,11 +1139,8 @@ div::-webkit-scrollbar {
   gap: 5px;
 }
 .basket-sticky {
-  width: 100%;
+  width: 430px;
   border-radius: 15px 15px 0 0;
-  position: fixed;
-  bottom: 0;
-  left: 0;
   height: 50px;
   display: flex;
   align-items: center;
@@ -1138,7 +1161,7 @@ div::-webkit-scrollbar {
 }
 .basket-sticky > div > button:first-child > span {
   position: absolute;
-  top: 2px;
+  top: -5px;
   right: 2px;
   display: flex;
   align-items: center;
@@ -1291,16 +1314,24 @@ progress::-webkit-progress-value {
 .basket-title > span {
   font-size: 10px;
 }
-.payment-fixed {
+.payment-fixed-wrapper {
   width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background-color: transparent;
+  z-index: 5;
+}
+.payment-fixed {
+  width: 430px;
   height: 70px;
   display: flex;
   align-items: center;
   padding-inline: 10px;
   padding-block: 10px;
-  position: fixed;
-  bottom: 0;
-  left: 0;
   background-color: #fff;
   box-shadow: 0 0 5px gray;
   border-radius: 15px 15px 0 0;
@@ -1316,6 +1347,12 @@ progress::-webkit-progress-value {
   justify-content: space-between;
   padding-inline: 15px;
   color: #fff;
+  &:disabled {
+    background-color: #e5e5e5;
+    color: #ababab;
+    font-weight: 500;
+    justify-content: center;
+  }
 }
 .modal-body > div {
   width: 100%;
@@ -1415,6 +1452,41 @@ progress::-webkit-progress-value {
   align-items: center;
   justify-content: center;
 }
+.progress > textarea {
+  width: 100%;
+  height: 100px;
+  border: 1px solid #efefef;
+  padding-inline: 5px;
+  padding-block: 5px;
+  resize: none;
+  margin-top: 5px;
+  text-decoration: none;
+  margin-bottom: 5px;
+}
+.progress > button {
+  width: 100%;
+  height: 40px;
+  border-radius: 15px;
+  background-color: var(--brand-color);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 5px;
+  &:disabled {
+    background-color: #e5e5e5;
+    color: #ababab;
+    font-weight: 500;
+    justify-content: center;
+  }
+}
+
+.gm-control-active {
+  display: none !important;
+}
+
 @media (min-width: 420px) {
   .extra-products-container > .card {
     width: 32%;

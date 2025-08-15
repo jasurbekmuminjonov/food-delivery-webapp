@@ -5,33 +5,39 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCreateUserMutation } from "../../context/services/user.service";
 import { IoSearchOutline } from "react-icons/io5";
-
-const containerStyle = {
-  width: "100%",
-  height: "100%",
-};
-
-const initialCenter = {
-  lat: 41.2995,
-  lng: 69.2401,
-};
-
+import markerPng from "../../assets/marker.png";
+const containerStyle = { width: "100%", height: "100%", outline: "none" };
+const initialCenter = { lat: 40.99759001665414, lng: 71.67265238668314 };
+const staticCenter = { lat: 40.99759001665414, lng: 71.67265238668314 };
+const radius = 10000;
+function getDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371e3;
+  const toRad = (deg) => (deg * Math.PI) / 180;
+  const φ1 = toRad(lat1);
+  const φ2 = toRad(lat2);
+  const Δφ = toRad(lat2 - lat1);
+  const Δλ = toRad(lng2 - lng1);
+  const a =
+    Math.sin(Δφ / 2) ** 2 + Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
 const Map = () => {
   const [searchParams] = useSearchParams();
   const lat = searchParams.get("lat");
   const long = searchParams.get("long");
   const [createUser, { isLoading }] = useCreateUserMutation();
+  const [isMoving, setIsMoving] = useState(false);
   const [position, setPosition] = useState(
     lat && long ? { lat: Number(lat), lng: Number(long) } : initialCenter
   );
   const [zoom, setZoom] = useState(lat && long ? 15 : 10);
+  const [isOutside, setIsOutside] = useState(false);
   const mapRef = useRef(null);
   const navigate = useNavigate();
-
   const onLoad = (map) => {
     mapRef.current = map;
   };
-
   const onDragEnd = () => {
     if (mapRef.current) {
       const newCenter = {
@@ -39,17 +45,13 @@ const Map = () => {
         lng: mapRef.current.getCenter().lng(),
       };
       setPosition(newCenter);
+      setIsMoving(false);
     }
   };
-
   const onMapClick = useCallback((event) => {
-    const newPos = {
-      lat: event.latLng.lat(),
-      lng: event.latLng.lng(),
-    };
+    const newPos = { lat: event.latLng.lat(), lng: event.latLng.lng() };
     setPosition(newPos);
   }, []);
-
   const handleLocationClick = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -77,21 +79,26 @@ const Map = () => {
       alert("Brauzeringiz joylashuvni qo'llab-quvvatlamaydi");
     }
   };
-
   useEffect(() => {
     if (mapRef.current) {
       mapRef.current.panTo(position);
     }
+    const distance = getDistance(
+      position.lat,
+      position.lng,
+      staticCenter.lat,
+      staticCenter.lng
+    );
+    setIsOutside(distance > radius);
   }, [position]);
-
   const mapOptions = {
     zoomControl: false,
     fullscreenControl: false,
     streetViewControl: false,
     mapTypeControl: false,
     gestureHandling: "greedy",
+    clickableIcons: false,
   };
-
   async function handleSubmit() {
     try {
       await createUser({
@@ -103,7 +110,6 @@ const Map = () => {
       console.log(err);
     }
   }
-
   return (
     <div className="map-page">
       <button className="arrow-left" onClick={() => navigate(-1)}>
@@ -116,6 +122,17 @@ const Map = () => {
         <TiLocationArrowOutline size={25} color="#666666" />
       </button>
       <div className="map-body">
+        <div className="marker">
+          <img
+            style={
+              isMoving
+                ? { transform: "translateY(-15px)" }
+                : { transform: "translateY(0px)" }
+            }
+            src={markerPng}
+            alt=""
+          />
+        </div>
         <LoadScript googleMapsApiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
           <GoogleMap
             mapContainerStyle={containerStyle}
@@ -123,18 +140,30 @@ const Map = () => {
             zoom={zoom}
             onClick={onMapClick}
             onLoad={onLoad}
+            onDragStart={() => setIsMoving(true)}
             onDragEnd={onDragEnd}
             options={mapOptions}
-          >
-            <Marker position={position} />
-          </GoogleMap>
+          ></GoogleMap>
         </LoadScript>
       </div>
-      <div className="map-footer">
-        <button onClick={handleSubmit}>Manzilni tanlash</button>
+      <div
+        className="map-footer"
+        style={
+          isMoving
+            ? { transform: "translateY(100px)" }
+            : { transform: "translateY(0px)" }
+        }
+      >
+        {isOutside && <p>Hozircha bu yerga yetkazilmaydi</p>}
+        <button
+          style={{ fontSize: "16px" }}
+          onClick={handleSubmit}
+          disabled={isOutside}
+        >
+          Manzilni tanlash
+        </button>
       </div>
     </div>
   );
 };
-
 export default Map;

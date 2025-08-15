@@ -39,6 +39,7 @@ const Search = () => {
           <li
             key={sub._id}
             style={{ padding: "4px 0", paddingLeft: "24px", cursor: "pointer" }}
+            onClick={() => navigate(`/category/${cat._id}#${sub._id}`)}
           >
             {sub.subcategory}
           </li>

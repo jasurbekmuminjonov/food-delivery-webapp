@@ -90,12 +90,11 @@ function LocationSearch() {
             placeholder="Manzil qidiruvi"
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
-            style={{ width: "300px", height: "40px", fontSize: "16px" }}
           />
-          <button onClick={() => navigate("/map")}>
-            {/* <img width={"20px"} src={maps} alt="" /> */}
-            <IoLocationOutline size={25} />
-          </button>
+        </div>
+        <div>
+          <button onClick={() => navigate("/map")}>Xaritadan tanlash</button>
+          <button onClick={() => navigate("/")}>Bosh sahifa</button>
         </div>
         <div className="suggestions">
           {suggestions.length > 0 &&

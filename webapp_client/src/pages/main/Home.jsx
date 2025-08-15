@@ -3,6 +3,7 @@ import {
   FaPercent,
   FaQrcode,
   FaRegHeart,
+  FaRegUser,
 } from "react-icons/fa";
 import { IoLocationSharp, IoSearch } from "react-icons/io5";
 import { PiArrowCounterClockwiseBold } from "react-icons/pi";
@@ -29,7 +30,6 @@ const Home = () => {
   const { data: products = [] } = useGetProductsQuery();
   const [aksiyaModal, setAksiyaModal] = useState(false);
   const { data: orders = [] } = useGetOrdersQuery();
-
   const [closing, setClosing] = useState(false);
   const navigate = useNavigate();
   const [getUser, { data: userData = {} }] = useLazyGetUserByQueryQuery();
@@ -84,6 +84,67 @@ const Home = () => {
 
   return (
     <div className="home">
+      <div
+        style={
+          showSticky
+            ? { transform: "translateY(0px)" }
+            : { transform: "translateY(-62px)" }
+        }
+        className="search-sticky-wrapper"
+      >
+        <div className="search-sticky">
+          <div className="search" onClick={() => navigate("/search")}>
+            <IoSearch size={20} />
+            <p>Do'kondan topish</p>
+          </div>
+        </div>
+      </div>
+      <div className="payment-fixed-wrapper">
+        <div className="basket-sticky">
+          <div>
+            <button>
+              <BsBasket3 size={20} />
+              <span>{basket.length}</span>
+            </button>
+            {orders.filter(
+              (o) =>
+                o.order_status === "preparing" ||
+                o.order_status === "delivering"
+            ).length > 0 && (
+              <button onClick={() => navigate("/order")}>
+                <MdDeliveryDining size={30} />
+              </button>
+            )}
+          </div>
+          <button onClick={() => navigate("/basket")}>
+            {basket.length < 1
+              ? "Savat bo'sh"
+              : Number(
+                  basket
+                    .reduce((acc, item) => {
+                      const product = products.find(
+                        (i) => i._id === item.product_id
+                      );
+
+                      if (!product) return acc;
+
+                      const discount = product.discount_log?.find(
+                        (d) => d.status === "active"
+                      );
+
+                      let price = product.selling_price;
+
+                      if (discount) {
+                        price = price - (price / 100) * discount.percent;
+                      }
+
+                      return acc + price * item.quantity;
+                    }, 0)
+                    .toFixed()
+                ).toLocaleString("ru-RU") + " so'm"}
+          </button>
+        </div>
+      </div>
       {aksiyaModal && (
         <div className="modal-container" onClick={closeModal}>
           <div className={`aksiya-modal ${closing ? "hide" : ""}`}>
@@ -105,6 +166,7 @@ const Home = () => {
         </div>
       )}
       <p
+        style={{ cursor: "pointer" }}
         onClick={() => {
           !userData?.default_address?.lat || !userData?.default_address?.long
             ? navigate("/places")
@@ -147,10 +209,10 @@ const Home = () => {
           <b>Avvalgi haridlar</b>
         </div>
         <div>
-          <button>
-            <FaQrcode size={25} color="green" />
+          <button onClick={() => navigate("/user")}>
+            <FaRegUser size={25} color="green" />
           </button>
-          <b>QR kod</b>
+          <b>Hisob</b>
         </div>
       </div>
       <div className="box" onClick={() => setAksiyaModal(true)}>
@@ -194,19 +256,6 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div className="discount">
-        <div className="discount-head">
-          <b>Top sotilayotgan tovarlar</b>
-          <button>
-            Hammasi <FaChevronRight />
-          </button>
-        </div>
-        <div className="discount-body">
-          {discountedProducts?.slice(0, 4)?.map((item) => (
-            <Card basket={basket} setBasket={setBasket} item={item} />
-          ))}
-        </div>
-      </div>
       <div className="category-container">
         <p>Sut mahsulotlari</p>
         <div className="category-flex">
@@ -236,61 +285,73 @@ const Home = () => {
           </div>
         </div>
       </div>
-      <div
-        className="search-sticky"
-        style={
-          showSticky
-            ? { transform: "translateY(0px)" }
-            : { transform: "translateY(-62px)" }
-        }
-      >
-        <div className="search" onClick={() => navigate("/search")}>
-          <IoSearch size={20} />
-          <p>Do'kondan topish</p>
+      <div className="discount">
+        <div className="discount-head">
+          <b>Sizga yoqadi</b>
+          <button>
+            Hammasi <FaChevronRight />
+          </button>
+        </div>
+        <div className="discount-body">
+          {discountedProducts?.slice(0, 4)?.map((item) => (
+            <Card basket={basket} setBasket={setBasket} item={item} />
+          ))}
         </div>
       </div>
-      <div className="basket-sticky">
-        <div>
-          <button>
-            <BsBasket3 size={20} />
-            <span>{basket.length}</span>
-          </button>
-          {orders.filter(
-            (o) =>
-              o.order_status === "preparing" || o.order_status === "delivering"
-          ).length > 0 && (
-            <button onClick={() => navigate("/order")}>
-              <MdDeliveryDining size={30} />
-            </button>
-          )}
+      <div className="category-container">
+        <b>Go'sht va parranda</b>
+        <div className="category-box">
+          <div className="category-card" style={{ background: "#EFC6E4" }}>
+            <p>Go'sht va parranda</p>
+            <img src={vegetables} alt="vegetables" />
+          </div>
+          <div className="category-card" style={{ background: "#EFC6E4" }}>
+            <p>Kolbasa mahsulotlari</p>
+            <img src={fruits} alt="fruits" />
+          </div>
         </div>
-        <button onClick={() => navigate("/basket")}>
-          {basket.length < 1
-            ? "Savat bo'sh"
-            : Number(
-                basket
-                  .reduce((acc, item) => {
-                    const product = products.find(
-                      (i) => i._id === item.product_id
-                    );
-
-                    if (!product) return acc;
-
-                    const discount = product.discount_log?.find(
-                      (d) => d.status === "active"
-                    );
-
-                    let price = product.selling_price;
-
-                    if (discount) {
-                      price = price - (price / 100) * discount.percent;
-                    }
-
-                    return acc + price * item.quantity;
-                  }, 0)
-                  .toFixed()
-              ).toLocaleString("ru-RU") + " so'm"}
-        </button>
+      </div>
+      <div className="category-container">
+        <p>Dengiz mahsulotlari</p>
+        <div className="category-flex">
+          <div className="category-item" style={{ background: "#D9E5F3" }}>
+            <p>Baliq</p>
+            <img height="110" src={milk} alt="" />
+          </div>
+          <div className="category-item" style={{ background: "#D9E5F3" }}>
+            <p>Dengiz mahsulotlari</p>
+            <img src={egg} alt="" />
+          </div>
+          <div className="category-item" style={{ background: "#D9E5F3" }}>
+            <p>Baliqli gazaklar</p>
+            <img src={tvorojok} alt="" />
+          </div>
+        </div>
+      </div>
+      <div className="category-container">
+        <p>Suv va ichimliklar</p>
+        <div className="category-penta">
+          <div className="category-item">
+            <p>Sut va sariyog'</p>
+            <img height="110" src={milk} alt="" />
+          </div>
+          <div className="category-item">
+            <p>Tuxum</p>
+            <img src={egg} alt="" />
+          </div>
+          <div className="category-item">
+            <p>Tvorojok va siroklar</p>
+            <img src={tvorojok} alt="" />
+          </div>
+          <div className="category-item">
+            <p>Yogurt</p>
+            <img height="110" src={yogurt} alt="" />
+          </div>
+          <div className="category-item">
+            <p>Pishloq</p>
+            <img src={cheese} alt="" />
+          </div>
+        </div>
       </div>
     </div>
   );

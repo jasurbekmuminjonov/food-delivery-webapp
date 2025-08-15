@@ -80,57 +80,60 @@ const Product = () => {
 
   return (
     <div className="product-wrapper">
-      <div className="product-price">
-        {discount ? (
-          <Space
-            direction="vertical"
-            style={{
-              width: "50%",
-              display: "flex",
-              flexDirection: "column",
-              gap: "0px",
-            }}
-          >
-            <b className="discount-b">
-              {Number(
-                (
-                  item?.selling_price -
-                  (item?.selling_price / 100) * discount?.percent
-                ).toFixed()
-              ).toLocaleString("ru-RU")}{" "}
-              so'm
-            </b>
-            <span className="discount-span">
-              {item?.selling_price?.toLocaleString("ru-RU")} so'm
-            </span>
-          </Space>
-        ) : (
-          <p>{item?.selling_price?.toLocaleString("ru-RU")} so'm</p>
-        )}
-        {basket?.find((p) => p.product_id === item?._id) ? (
-          <div className="product-counter">
-            <button onClick={handleDecrease}>
-              <FaMinus />
+      <div className="payment-fixed-wrapper">
+        <div className="product-price">
+          {discount ? (
+            <Space
+              direction="vertical"
+              style={{
+                width: "50%",
+                display: "flex",
+                flexDirection: "column",
+                gap: "0px",
+              }}
+            >
+              <b className="discount-b">
+                {Number(
+                  (
+                    item?.selling_price -
+                    (item?.selling_price / 100) * discount?.percent
+                  ).toFixed()
+                ).toLocaleString("ru-RU")}{" "}
+                so'm
+              </b>
+              <span className="discount-span">
+                {item?.selling_price?.toLocaleString("ru-RU")} so'm
+              </span>
+            </Space>
+          ) : (
+            <p>{item?.selling_price?.toLocaleString("ru-RU")} so'm</p>
+          )}
+          {basket?.find((p) => p.product_id === item?._id) ? (
+            <div className="product-counter">
+              <button onClick={handleDecrease}>
+                <FaMinus />
+              </button>
+              <p style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                {basket?.find((p) => p.product_id === item?._id)?.quantity}{" "}
+                {item.unit !== "dona" && (
+                  <span style={{ fontSize: "13px" }}>{item.unit}</span>
+                )}
+              </p>
+              <button onClick={handleIncrease}>
+                <FaPlus />
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={handleAddToBasket}
+              disabled={item.status === "not_available"}
+            >
+              {item.status === "not_available" ? "Mavjud emas" : "Savatga"}
             </button>
-            <p style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-              {basket?.find((p) => p.product_id === item?._id)?.quantity}{" "}
-              {item.unit !== "dona" && (
-                <span style={{ fontSize: "13px" }}>{item.unit}</span>
-              )}
-            </p>
-            <button onClick={handleIncrease}>
-              <FaPlus />
-            </button>
-          </div>
-        ) : (
-          <button
-            onClick={handleAddToBasket}
-            disabled={item.status === "not_available"}
-          >
-            {item.status === "not_available" ? "Mavjud emas" : "Savatga"}
-          </button>
-        )}
+          )}
+        </div>
       </div>
+
       <div className="product-image">
         <img src={item?.image_log?.find((i) => i.isMain).image_url} alt="" />
         <div className="actions">

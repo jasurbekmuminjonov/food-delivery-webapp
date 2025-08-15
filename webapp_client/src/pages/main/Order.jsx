@@ -1,9 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useGetOrdersQuery } from "../../context/services/order.service";
+import {
+  useCancelOrderMutation,
+  useGetOrdersQuery,
+} from "../../context/services/order.service";
 import { IoSearchOutline } from "react-icons/io5";
 import { FaArrowLeftLong, FaX } from "react-icons/fa6";
 import { AiOutlineDelete } from "react-icons/ai";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { Divider } from "antd";
 import giftIos from "../../assets/gift_ios.png";
 import { useGetProductsQuery } from "../../context/services/product.service";
@@ -17,6 +20,8 @@ import { IoMdDoneAll } from "react-icons/io";
 const Order = () => {
   const { data: orders = [] } = useGetOrdersQuery();
   const { data: products = [] } = useGetProductsQuery();
+  const [cancellingReason, setCancellingReason] = useState("");
+  const [cancelOrder] = useCancelOrderMutation();
 
   const navigate = useNavigate();
   const activeOrder = useMemo(() => {
@@ -79,7 +84,6 @@ const Order = () => {
           </>
         )}
       </h3>
-
       <div className="progress" style={{ height: "auto" }}>
         <p>
           Yetkazish {activeOrder?.delivery_fee?.toLocaleString("ru-RU")} so'm
@@ -210,6 +214,37 @@ const Order = () => {
         <p style={{ display: "flex", alignItems: "center", gap: "5px" }}>
           <img width="30px" src={cashImg} alt="" /> Naqd bilan kuryerga
         </p>
+      </div>
+      <div className="progress" style={{ height: "auto" }}>
+        <strong>Buyurtmani bekor qilish</strong>
+        <p>
+          Diqqat! Buyurtmani sababsiz bekor qilsangiz hisobingiz blokka tushishi
+          mumkin
+        </p>
+        <textarea
+          value={cancellingReason}
+          onChange={(e) => setCancellingReason(e.target.value)}
+          placeholder="Iltimos nega bekor qilmoqchi ekaningizni yozing"
+        ></textarea>
+        <button
+          onClick={async () => {
+            try {
+              if (
+                window.confirm("Chindan ham buyurtmani bekor qilmoqchimisiz?")
+              ) {
+                await cancelOrder({
+                  order_id: activeOrder._id,
+                  cancellation_reason: cancellingReason,
+                });
+                navigate("/");
+              }
+            } catch (err) {
+              console.log(err);
+            }
+          }}
+        >
+          Bekor qilish
+        </button>
       </div>
     </div>
   );

@@ -9,6 +9,8 @@ import Wishes from "../pages/main/Wishes";
 import Basket from "../pages/main/Basket";
 import Result from "../pages/main/Result";
 import Order from "../pages/main/Order";
+import Category from "../components/Category";
+import User from "../pages/main/User";
 
 const Layout = () => {
   return (
@@ -24,6 +26,8 @@ const Layout = () => {
         <Route path="/basket" element={<Basket />} />
         <Route path="/success" element={<Result />} />
         <Route path="/order" element={<Order />} />
+        <Route path="/user" element={<User />} />
+        <Route path="/category/:category" element={<Category />} />
       </Routes>
     </div>
   );
