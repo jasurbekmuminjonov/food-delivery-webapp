@@ -19,11 +19,11 @@ exports.createOrder = async (req, res) => {
       (acc, p) => acc + p.quantity * p.sale_price,
       0
     );
-    for (const item of products) {
-      await Product.findByIdAndUpdate(item.product_id, {
-        $inc: { total_stock: -item.quantity },
-      });
-    }
+    // for (const item of products) {
+    //   await Product.findByIdAndUpdate(item.product_id, {
+    //     $inc: { total_stock: -item.quantity },
+    //   });
+    // }
 
     req.body.total_price = totalPrice + delivery_fee;
     req.body.user_id = user._id;
@@ -57,7 +57,9 @@ exports.getOrdersByUser = async (req, res) => {
           "Avtorizatsiya xatosi. Telegram botga /start buyrug'ini bering",
       });
     }
-    const orders = await Order.find({ user_id: user._id }).populate("courier_id");
+    const orders = await Order.find({ user_id: user._id }).populate(
+      "courier_id"
+    );
     res.status(200).json(orders);
   } catch (err) {
     console.log(err.message);
@@ -135,15 +137,19 @@ exports.completeDelivering = async (req, res) => {
 };
 exports.cancelOrder = async (req, res) => {
   try {
-    const { id } = req.params;
-    const order = await Order.findByIdAndUpdate(id, {
-      $set: { order_status: "canceled", canceled_date: Date.now() },
+    const { cancellation_reason, order_id } = req.body;
+    await Order.findByIdAndUpdate(order_id, {
+      $set: {
+        order_status: "canceled",
+        cancellation_reason,
+        canceled_date: Date.now(),
+      },
     });
-    for (const item of order.products) {
-      await Product.findByIdAndUpdate(item.product_id, {
-        $inc: { total_stock: item.quantity },
-      });
-    }
+    // for (const item of order.products) {
+    //   await Product.findByIdAndUpdate(item.product_id, {
+    //     $inc: { total_stock: item.quantity },
+    //   });
+    // }
     res.status(200).json({ message: "Buyurtma yetkazishga tayyorlandi" });
   } catch (err) {
     console.log(err.message);

@@ -21,8 +21,6 @@ rt.put("/order/cancel", cancelOrder);
 rt.get("/product/get", getProducts);
 rt.get("/category/get", getCategories);
 
-
-
 rt.post("/user/create", createUser);
 rt.get("/user/get", getUserByQuery);
 

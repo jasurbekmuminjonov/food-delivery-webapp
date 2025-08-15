@@ -45,6 +45,10 @@ const OrderSchema = new mongoose.Schema(
       required: true,
       enum: ["male", "female"],
     },
+    cancellation_reason: {
+      type: String,
+      default: "",
+    },
     created_date: {
       type: Date,
       default: Date.now,
