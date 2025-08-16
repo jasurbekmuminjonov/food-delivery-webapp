@@ -306,7 +306,7 @@ input[type="number"]::-webkit-inner-spin-button {
   width: 100%;
   height: 100%;
   overflow-y: scroll;
-  padding-inline: 15px;
+  padding-inline: 5px;
   padding-block: 5px;
   padding-block-end: 60px;
   display: flex;
@@ -533,6 +533,7 @@ div::-webkit-scrollbar {
 .category-container {
   width: 100%;
   display: flex;
+
   flex-direction: column;
   gap: 5px;
   font-size: 20px;
@@ -542,22 +543,27 @@ div::-webkit-scrollbar {
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 5px;
 }
 .category-card {
-  width: 50%;
+  width: calc(50% - 2px);
+  flex: 0 0 calc(50% - 10px);
   aspect-ratio: 16 / 9;
+
   height: 35vw;
-  max-height: 150px;
+  max-height: 120px;
   border-radius: 15px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
 .category-card > img {
-  width: 80%;
-  height: 65%;
+  max-width: 120px;
+  height: 75%;
   object-fit: contain;
+  margin-left: auto;
+  margin-top: auto;
 }
 .category-card > p {
   font-size: 12px;
@@ -569,17 +575,36 @@ div::-webkit-scrollbar {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
+  justify-content: center;
+  gap: 5px;
 }
-.category-penta{
-  
+.category-penta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
 }
 
+/* 1-qator (1 va 2-element) */
+.category-penta > :nth-child(-n + 2) {
+  flex: 0 0 calc(50% - 3px);
+}
+
+/* 2-qator (3, 4, 5-element) */
+.category-penta > :nth-child(n + 3):nth-child(-n + 5) {
+  flex: 0 0 calc(33.333% - 4px);
+}
+
+/* 3-qator (6 va 7-element) */
+.category-penta > :nth-child(n + 6):nth-child(-n + 7) {
+  flex: 0 0 calc(50% - 5px);
+}
 .category-item {
-  flex: 0 0 calc(33.333% - 10px);
+  flex: 0 0 calc(33.333% - 4px);
   box-sizing: border-box;
-  width: calc(33.333% - 10px);
+  width: calc(33.333% - 4px);
   aspect-ratio: 1 / 1;
+  max-height: 120px;
   background: #b9ccec;
   position: relative;
   display: flex;
@@ -587,10 +612,18 @@ div::-webkit-scrollbar {
   justify-content: end;
   border-radius: 15px;
 }
+
 .category-item > img {
   width: 80%;
+  max-width: 100px;
   object-fit: contain;
   display: flex;
+  margin-left: auto;
+  margin-top: auto;
+}
+.category-item > p {
+  padding-left: 1px;
+  padding-block: 1px;
 }
 .category-flex > :first-child > img {
   width: 50%;
@@ -782,7 +815,7 @@ div::-webkit-scrollbar {
   align-items: center;
   justify-content: center;
   background: #00000071;
-  z-index: 3;
+  z-index: 6;
   flex-direction: column;
 }
 .aksiya-modal {
@@ -902,6 +935,7 @@ div::-webkit-scrollbar {
   left: 0;
   background-color: transparent;
   transition: 0.5s;
+  z-index: 3;
 }
 .search-sticky {
   width: 430px;

@@ -11,6 +11,8 @@ import Products from "../pages/Products";
 import CategoryAdd from "../pages/CategoryAdd";
 import CourierAdd from "../pages/CourierAdd";
 import Couriers from "../pages/Couriers";
+import Orders from "../pages/Orders";
+import Users from "../pages/Users";
 
 const Layout = () => {
   const location = useLocation();
@@ -67,7 +69,7 @@ const Layout = () => {
       </nav>
       <main>
         <Routes>
-          <Route path="/" element={<p>Buyurtmalar</p>} />
+          <Route path="/" element={<Orders />} />
           <Route path="/product" element={<Products />} />
           <Route path="/courier" element={<Couriers />} />
           <Route path="/product/add" element={<ProductAdd />} />
@@ -75,6 +77,7 @@ const Layout = () => {
           <Route path="/courier/add" element={<CourierAdd />} />
           <Route path="/courier/add/:id" element={<CourierAdd />} />
           <Route path="/category/add" element={<CategoryAdd />} />
+          <Route path="/user" element={<Users />} />
         </Routes>
       </main>
     </div>

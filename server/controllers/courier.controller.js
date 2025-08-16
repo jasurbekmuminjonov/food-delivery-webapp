@@ -78,7 +78,7 @@ exports.editCourier = async (req, res) => {
 exports.editCourierPassword = async (req, res) => {
   try {
     const { id } = req.params;
-    const {    } = req.body;
+    const { courier_password } = req.body;
     const hashed = await hashPassword(courier_password);
     await Courier.findByIdAndUpdate(id, { courier_password: hashed });
     res.status(200).json({ message: "Kuryerning paroli tahrirlandi" });

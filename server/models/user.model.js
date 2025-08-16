@@ -17,6 +17,10 @@ const UserSchema = new mongoose.Schema(
       // enum: ["male", "female"],
       default: "",
     },
+    isBlocked: {
+      type: Boolean,
+      default: false,
+    },
     telegram_id: {
       type: String,
       required: true,

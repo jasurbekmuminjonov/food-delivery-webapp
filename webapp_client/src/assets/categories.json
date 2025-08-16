@@ -1,0 +1,242 @@
+[
+  {
+    "_id": "688cab0f66ac4bb5a48e7651",
+    "category": "Suv va ichimliklar",
+    "subcategories": [
+      {
+        "_id": "688cac0c66ac4bb5a48e7655",
+        "subcategory": "Gazlangan ichimliklar"
+      },
+      { "_id": "688f3b12d1705249599c6b4d", "subcategory": "Suv" },
+      {
+        "_id": "6894852535da7e65ae3c4da5",
+        "subcategory": "Sharbatlar va morslar"
+      },
+      {
+        "_id": "6894853035da7e65ae3c4da8",
+        "subcategory": "Yaxna choy va qahva"
+      },
+      {
+        "_id": "68a051d9a5d7906913b4f5a8",
+        "subcategory": "Energetik ichimliklar"
+      }
+    ]
+  },
+  {
+    "_id": "689483c535da7e65ae3c4d50",
+    "category": "Sabzavot va mevalar",
+    "subcategories": [
+      {
+        "_id": "6894846835da7e65ae3c4d7d",
+        "subcategory": "Sabzavot, qo'ziqorin, ko'katlar"
+      },
+      {
+        "_id": "6894847435da7e65ae3c4d80",
+        "subcategory": "Mevalar va rezavorlar"
+      }
+    ]
+  },
+  {
+    "_id": "689483ce35da7e65ae3c4d53",
+    "category": "Sut mahsulotlari",
+    "subcategories": [
+      { "_id": "6894848b35da7e65ae3c4d86", "subcategory": "Tuxum" },
+      { "_id": "6894849835da7e65ae3c4d89", "subcategory": "Sirok va boshqa" },
+      { "_id": "6894849e35da7e65ae3c4d8c", "subcategory": "Yogurt" },
+      { "_id": "689484a435da7e65ae3c4d8f", "subcategory": "Pishloq" },
+      {
+        "_id": "689484ad35da7e65ae3c4d92",
+        "subcategory": "Qatiqli mahsulotlar"
+      },
+      { "_id": "68987f4e7a4e91bf97fbc5b8", "subcategory": "Sut" },
+      { "_id": "68987f527a4e91bf97fbc5bb", "subcategory": "Sariyog'" },
+      { "_id": "68987f557a4e91bf97fbc5be", "subcategory": "Qaymoq" },
+      { "_id": "68987f8d7a4e91bf97fbc5d0", "subcategory": "Tvorok" }
+    ]
+  },
+  {
+    "_id": "689483d835da7e65ae3c4d56",
+    "category": "Go'sht va parranda",
+    "subcategories": [
+      {
+        "_id": "689484c335da7e65ae3c4d98",
+        "subcategory": "Kolbasa mahsulotlari"
+      },
+      { "_id": "68987fd27a4e91bf97fbc5e5", "subcategory": "Mol go'shti" },
+      { "_id": "68987fd87a4e91bf97fbc5e8", "subcategory": "Qo'y go'shti" },
+      { "_id": "68987fdb7a4e91bf97fbc5eb", "subcategory": "Tovuq go'shti" },
+      {
+        "_id": "68987fe17a4e91bf97fbc5ee",
+        "subcategory": "Boshqa go'sht turlari"
+      }
+    ]
+  },
+  {
+    "_id": "689483df35da7e65ae3c4d59",
+    "category": "Dengiz mahsulotlari",
+    "subcategories": [
+      { "_id": "689484cb35da7e65ae3c4d9b", "subcategory": "Baliq" },
+      {
+        "_id": "689484d335da7e65ae3c4d9e",
+        "subcategory": "Dengiz mahsulotlari"
+      },
+      { "_id": "689484dd35da7e65ae3c4da1", "subcategory": "Baliqli gazaklar" }
+    ]
+  },
+  {
+    "_id": "689483ea35da7e65ae3c4d5f",
+    "category": "Shirinliklar",
+    "subcategories": [
+      {
+        "_id": "6894856035da7e65ae3c4dae",
+        "subcategory": "Shokolad va konfetlar"
+      },
+      { "_id": "6894856835da7e65ae3c4db1", "subcategory": "Biskvit" },
+      { "_id": "6894857035da7e65ae3c4db4", "subcategory": "Pechenye va vafli" },
+      {
+        "_id": "6894857935da7e65ae3c4db7",
+        "subcategory": "Pastila va marmelad"
+      },
+      {
+        "_id": "6894858135da7e65ae3c4dba",
+        "subcategory": "Murabbo va pastalar"
+      },
+      { "_id": "6894858b35da7e65ae3c4dbd", "subcategory": "Kassada" }
+    ]
+  },
+  {
+    "_id": "689483f635da7e65ae3c4d62",
+    "category": "Oziq ovqat mollari",
+    "subcategories": [
+      {
+        "_id": "689485a235da7e65ae3c4dc0",
+        "subcategory": "Makaron yormalar va un"
+      },
+      {
+        "_id": "689485ab35da7e65ae3c4dc3",
+        "subcategory": "Yormalar va myusli"
+      },
+      { "_id": "689485af35da7e65ae3c4dc6", "subcategory": "Yog'" },
+      { "_id": "689485b435da7e65ae3c4dc9", "subcategory": "Souslar" },
+      { "_id": "689485b735da7e65ae3c4dcc", "subcategory": "Shakar" },
+      { "_id": "689485bc35da7e65ae3c4dcf", "subcategory": "Ziravorlar" },
+      { "_id": "689485c035da7e65ae3c4dd2", "subcategory": "Choy" },
+      { "_id": "689485c735da7e65ae3c4dd5", "subcategory": "Qahva va kakao" },
+      { "_id": "689485cb35da7e65ae3c4dd8", "subcategory": "Sneklar" }
+    ]
+  },
+  {
+    "_id": "689483fc35da7e65ae3c4d65",
+    "category": "Non mahsulotlari",
+    "subcategories": [
+      { "_id": "689485d935da7e65ae3c4ddb", "subcategory": "Non" },
+      { "_id": "689485dd35da7e65ae3c4dde", "subcategory": "Pishiriqlar" },
+      { "_id": "689485e435da7e65ae3c4de1", "subcategory": "Xlebsty" }
+    ]
+  },
+  {
+    "_id": "6894840835da7e65ae3c4d68",
+    "category": "Muzlatilgan mahsulotlar va muzqaymoq",
+    "subcategories": [
+      { "_id": "689485f635da7e65ae3c4de4", "subcategory": "Muzqaymoq va muz" },
+      { "_id": "689485fc35da7e65ae3c4de7", "subcategory": "Tez pishiring" }
+    ]
+  },
+  {
+    "_id": "6894841035da7e65ae3c4d6b",
+    "category": "Turli xil konservalar",
+    "subcategories": [
+      {
+        "_id": "6894860e35da7e65ae3c4dea",
+        "subcategory": "Sabzavotli va mevali"
+      },
+      {
+        "_id": "6894861635da7e65ae3c4ded",
+        "subcategory": "Go'shtli va baliqli"
+      }
+    ]
+  },
+  {
+    "_id": "6894843135da7e65ae3c4d6e",
+    "category": "Bolalar uchun",
+    "subcategories": [
+      { "_id": "6894862035da7e65ae3c4df0", "subcategory": "Bolalar ovqatlari" },
+      {
+        "_id": "6894862735da7e65ae3c4df3",
+        "subcategory": "Tagliklar va salfetkalar"
+      },
+      {
+        "_id": "6894862f35da7e65ae3c4df6",
+        "subcategory": "Bolalar gigiyenasi"
+      },
+      {
+        "_id": "6894863a35da7e65ae3c4df9",
+        "subcategory": "Idishlar va aksesuarlar"
+      },
+      { "_id": "6894863f35da7e65ae3c4dfc", "subcategory": "O'yinchoqlar" }
+    ]
+  },
+  {
+    "_id": "6894843835da7e65ae3c4d71",
+    "category": "Uy hayvonlari uchun",
+    "subcategories": [
+      { "_id": "6894864835da7e65ae3c4dff", "subcategory": "Mushuklar uchun" },
+      { "_id": "6894864d35da7e65ae3c4e02", "subcategory": "Itlar uchun" }
+    ]
+  },
+  {
+    "_id": "6894844435da7e65ae3c4d74",
+    "category": "Gigiyena va parvarish",
+    "subcategories": [
+      { "_id": "6894865635da7e65ae3c4e05", "subcategory": "Tana uchun" },
+      { "_id": "6894865b35da7e65ae3c4e08", "subcategory": "Soch uchun" },
+      { "_id": "6894865f35da7e65ae3c4e0b", "subcategory": "Yuz uchun" },
+      { "_id": "6894866635da7e65ae3c4e0e", "subcategory": "Soqol olish uchun" },
+      {
+        "_id": "6894867e35da7e65ae3c4e11",
+        "subcategory": "Og'iz bo'shlig'i uchun"
+      },
+      { "_id": "6894868535da7e65ae3c4e14", "subcategory": "Ayol gigiyenasi" },
+      {
+        "_id": "6894868c35da7e65ae3c4e17",
+        "subcategory": "Foydali mayda buyumlar"
+      }
+    ]
+  },
+  {
+    "_id": "6894844a35da7e65ae3c4d77",
+    "category": "Chinniyu chiroq",
+    "subcategories": [
+      { "_id": "689486e435da7e65ae3c4e1b", "subcategory": "Idishlar uchun" },
+      { "_id": "689486ec35da7e65ae3c4e1e", "subcategory": "Kir yuvish uchun" },
+      {
+        "_id": "689486f635da7e65ae3c4e21",
+        "subcategory": "Yig'ishtirish uchun"
+      }
+    ]
+  },
+  {
+    "_id": "6894844f35da7e65ae3c4d7a",
+    "category": "Ro'zg'or uchun",
+    "subcategories": [
+      {
+        "_id": "6894871135da7e65ae3c4e24",
+        "subcategory": "Qog'oz va salfetkalar"
+      },
+      { "_id": "6894871735da7e65ae3c4e27", "subcategory": "Oshxona uchun" },
+      {
+        "_id": "6894871f35da7e65ae3c4e2a",
+        "subcategory": "Kiyim va oyoq kiyimi uchun"
+      },
+      {
+        "_id": "6894872735da7e65ae3c4e2d",
+        "subcategory": "Xilma-xil buyumlar"
+      },
+      { "_id": "6894872d35da7e65ae3c4e30", "subcategory": "Elektr jihozlari" },
+      {
+        "_id": "6894873735da7e65ae3c4e33",
+        "subcategory": "Kanselyariya buyumlari"
+      }
+    ]
+  }
+]

@@ -33,7 +33,7 @@ const Category = () => {
   }, [category, products, categories]);
 
   return (
-    <div className="extra-products">
+    <div className="extra-products" style={{ paddingBlockStart: "50px" }}>
       <div
         className="products-header-wrapper"
         style={{

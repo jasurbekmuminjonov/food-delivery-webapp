@@ -10,6 +10,22 @@ export const userApi = api.injectEndpoints({
       }),
       providesTags: ["Courier"],
     }),
+    getUsers: builder.query({
+      query: () => ({
+        url: "/user/get",
+        method: "GET",
+      }),
+      providesTags: ["User"],
+    }),
+
+    // Kuryerni tahrirlash (ID orqali)
+    blockUserToggle: builder.mutation({
+      query: (id) => ({
+        url: `/user/${id}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["User"],
+    }),
 
     // Yangi kuryer yaratish
     createCourier: builder.mutation({
@@ -55,7 +71,9 @@ export const userApi = api.injectEndpoints({
 export const {
   useGetCouriersQuery,
   useCreateCourierMutation,
+  useGetUsersQuery,
   useLoginAdminMutation,
   useEditCourierMutation,
   useEditCourierPasswordMutation,
+  useBlockUserToggleMutation
 } = userApi;

@@ -39,7 +39,9 @@ exports.createOrder = async (req, res) => {
 
 exports.getOrders = async (req, res) => {
   try {
-    const orders = await Order.find();
+    const orders = await Order.find()
+      .populate("user_id")
+      .populate("courier_id");
     res.status(200).json(orders);
   } catch (err) {
     console.log(err.message);
@@ -156,7 +158,7 @@ exports.completeDelivering = async (req, res) => {
 };
 exports.cancelOrder = async (req, res) => {
   try {
-    const { cancellation_reason, order_id } = req.body;
+    const { cancellation_reason = "", order_id } = req.body;
     await Order.findByIdAndUpdate(order_id, {
       $set: {
         order_status: "canceled",

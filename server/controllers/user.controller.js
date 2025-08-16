@@ -26,6 +26,30 @@ exports.getUsers = async (req, res) => {
   }
 };
 
+exports.userBlockingToggle = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: "Foydalanuvchi topilmadi" });
+    }
+
+    user.isBlocked = !user.isBlocked;
+    await user.save();
+
+    return res.status(200).json({
+      message: `Foydalanuvchi ${
+        user.isBlocked ? "bloklandi" : "blokdan chiqarildi"
+      }`,
+      user,
+    });
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({ message: "Serverda xatolik", err });
+  }
+};
+
 exports.getUserByQuery = async (req, res) => {
   try {
     const { telegram_id, user_phone } = req.query;
@@ -39,7 +63,6 @@ exports.getUserByQuery = async (req, res) => {
     const filter = telegram_id ? { telegram_id } : { user_phone };
 
     const user = await User.findOne(filter);
-    
 
     if (!user) {
       return res.status(400).json({ message: "Foydalanuvchi topilmadi" });

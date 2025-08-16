@@ -35,6 +35,10 @@ const {
   cancelOrder,
 } = require("../controllers/order.controller");
 const upload = require("../middlewares/upload");
+const {
+  getUsers,
+  userBlockingToggle,
+} = require("../controllers/user.controller");
 const rt = express.Router();
 
 rt.post("/admin/create", createAdmin);
@@ -69,5 +73,8 @@ rt.put("/order/set/courier", setCourierToOrder);
 rt.put("/order/complete/preparing/:id", completePreparing);
 rt.put("/order/complete/delivering/:id", completeDelivering); //body - payment_method: cash, card
 rt.put("/order/cancel", cancelOrder);
+
+rt.get("/user/get", getUsers);
+rt.put("/user/:id", userBlockingToggle);
 
 module.exports = rt;
