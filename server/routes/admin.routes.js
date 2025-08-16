@@ -41,7 +41,7 @@ rt.post("/admin/create", createAdmin);
 rt.post("/admin/login", loginAdmin);
 
 rt.post("/courier/create", createCourier);
-rt.post("/courier/login", loginCourier);
+rt.post("/courier/login", loginCourier); //courier_login, courier_password
 rt.get("/courier/get", getCouriers);
 rt.put("/courier/:id", editCourier);
 rt.put("/courier/password/:id", editCourierPassword);
@@ -63,10 +63,11 @@ rt.post("/subcategory/create", createSubcategory);
 rt.get("/category/get", getCategories);
 
 rt.get("/order/get", getOrders);
+rt.get("/order/get/courier", getOrders);
 rt.get("/order/get/actual", getActualOrders);
 rt.put("/order/set/courier", setCourierToOrder);
-rt.put("/order/complete/preparing", completePreparing);
-rt.put("/order/complete/delivering", completeDelivering);
+rt.put("/order/complete/preparing/:id", completePreparing);
+rt.put("/order/complete/delivering/:id", completeDelivering); //body - payment_method: cash, card
 rt.put("/order/cancel", cancelOrder);
 
 module.exports = rt;

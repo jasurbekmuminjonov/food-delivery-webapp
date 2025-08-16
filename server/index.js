@@ -18,3 +18,4 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server ishga tushdi: http://localhost:${PORT}/api/v1`);
 });
+//http://localhost:8080/api/v1/token/

@@ -46,6 +46,15 @@ exports.getOrders = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
+exports.getCourierOrders = async (req, res) => {
+  try {
+    const orders = await Order.find({ courier_id: req.user.id });
+    res.status(200).json(orders);
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({ message: "Serverda xatolik", err });
+  }
+};
 
 exports.getOrdersByUser = async (req, res) => {
   try {
@@ -114,8 +123,13 @@ exports.setCourierToOrder = async (req, res) => {
 exports.completePreparing = async (req, res) => {
   try {
     const { id } = req.params;
+    const { courier_id } = req.body;
     await Order.findByIdAndUpdate(id, {
-      $set: { order_status: "delivering", prepared_date: Date.now() },
+      $set: {
+        order_status: "delivering",
+        courier_id,
+        prepared_date: Date.now(),
+      },
     });
     res.status(200).json({ message: "Buyurtma yetkazishga tayyorlandi" });
   } catch (err) {
@@ -123,11 +137,16 @@ exports.completePreparing = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
+
 exports.completeDelivering = async (req, res) => {
   try {
     const { id } = req.params;
     await Order.findByIdAndUpdate(id, {
-      $set: { order_status: "completed", delivered_date: Date.now() },
+      $set: {
+        order_status: "completed",
+        payment_method: req.body.payment_method,
+        delivered_date: Date.now(),
+      },
     });
     res.status(200).json({ message: "Buyurtma yetkazildi" });
   } catch (err) {

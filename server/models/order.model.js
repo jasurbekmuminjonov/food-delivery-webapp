@@ -40,6 +40,11 @@ const OrderSchema = new mongoose.Schema(
       enum: ["preparing", "delivering", "completed", "canceled"],
       default: "preparing",
     },
+    payment_method: {
+      type: String,
+      enum: ["cash", "card"],
+      default: "cash",
+    },
     requested_courier: {
       type: String,
       required: true,
