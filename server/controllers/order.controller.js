@@ -64,7 +64,6 @@ exports.getCourierOrders = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
-
 exports.getOrdersByUser = async (req, res) => {
   try {
     const { telegram_id } = req.user;
@@ -163,7 +162,7 @@ exports.completePreparing = async (req, res) => {
   } catch (err) {
     console.log(err.message);
     return res.status(500).json({ message: "Serverda xatolik", err });
-  }
+  } 
 };
 
 exports.completeDelivering = async (req, res) => {

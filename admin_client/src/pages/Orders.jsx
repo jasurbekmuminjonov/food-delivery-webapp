@@ -400,7 +400,7 @@ table td:nth-child(2) {
         <div class="header">
           <h2>Bim - onlayn supermarket</h2>
           <div>Buyurtma ID si: #${record._id.slice(-6)?.toUpperCase()}</div>
-          <div>Kuryer: ${record.courier_id.courier_name || "-"}</div>
+          <div>Kuryer: ${record?.courier_id?.courier_name || "-"}</div>
           <div>Vaqt: ${new Date(record.createdAt).toLocaleString("ru-RU")}</div>
         </div>
         <table>
