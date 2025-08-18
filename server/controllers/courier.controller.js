@@ -103,7 +103,7 @@ exports.loginCourier = async (req, res) => {
       return res.status(200).json({ message: "Parol xato" });
     }
     const token = generateToken(courier, "courier");
-    res.status(200).json(token);
+    res.status(200).json({ token, courier_id: courier._id });
   } catch (err) {
     console.log(err.message);
     return res.status(500).json({ message: "Serverda xatolik", err });

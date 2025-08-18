@@ -11,7 +11,7 @@ const User = () => {
 
   useEffect(() => {
     getUser(localStorage.getItem("telegram_id"));
-  }, []);
+  }, [getUser]);
   return (
     <div className="basket-wrapper">
       <div className="products-header">

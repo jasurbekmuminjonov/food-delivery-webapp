@@ -16,12 +16,11 @@ import {
 } from "antd";
 import moment from "moment";
 import { FaCheckDouble, FaLocationDot } from "react-icons/fa6";
-import { useGetProductsQuery } from "../context/services/product.service";
+import { IoMdPrint } from "react-icons/io";
 import { useGetCouriersQuery } from "../context/services/courier.service";
 
 const Orders = () => {
   const { data: orders = [], isLoading } = useGetOrderQuery();
-  const { data: products = [] } = useGetProductsQuery();
   const { data: couriers = [] } = useGetCouriersQuery();
   const [completePreparing] = useCompletePreparingMutation();
 
@@ -49,36 +48,28 @@ const Orders = () => {
     });
   }, [orders, orderFilter, selectedDate]);
 
-  function returnProductData(productId) {
-    const product = products.find((p) => p._id === productId);
-    return product;
-  }
-
   const productColumns = [
     {
       title: "Mahsulot rasmi",
       dataIndex: "product_id",
-      render: (id) => (
-        <img
-          width={60}
-          src={returnProductData(id)?.image_log.find((i) => i.isMain).image_url}
-        />
+      render: (text) => (
+        <img width={60} src={text?.image_log.find((i) => i.isMain).image_url} />
       ),
     },
     {
       title: "Mahsulot nomi",
       dataIndex: "product_id",
-      render: (id) => returnProductData(id)?.product_name || "-",
+      render: (id) => id?.product_name || "-",
     },
     {
       title: "Birlik",
       dataIndex: "product_id",
-      render: (id) => returnProductData(id)?.unit || "-",
+      render: (id) => id?.unit || "-",
     },
     {
       title: "Birlik qo'shimchasi",
       dataIndex: "product_id",
-      render: (id) => returnProductData(id)?.unit_description || "-",
+      render: (id) => id?.unit_description || "-",
     },
     {
       title: "Soni",
@@ -289,11 +280,158 @@ const Orders = () => {
           }
           trigger="click"
         >
-          <Button icon={<FaCheckDouble />} />
+          <Button
+            disabled={record.order_status !== "preparing"}
+            icon={<FaCheckDouble />}
+          />
         </Popover>
       ),
     },
+    {
+      title: "Chop etish",
+      render: (_, record) => (
+        <Button onClick={() => handlePrint(record)} icon={<IoMdPrint />} />
+      ),
+    },
   ];
+
+  const handlePrint = (record) => {
+    const printWindow = window.open("", "_blank", "width=400,height=600");
+
+    const productsHtml = record.products
+      .map(
+        (p) => `
+      <tr>
+        <td>${p.product_id.product_name}</td>
+        <td style="text-align:center;">${p.quantity}</td>
+        <td style="text-align:right;">${p.sale_price.toLocaleString(
+          "ru-RU"
+        )}</td>
+      </tr>
+    `
+      )
+      .join("");
+
+    const subtotal = record.products.reduce(
+      (sum, p) => sum + p.sale_price * p.quantity,
+      0
+    );
+
+    const delivery = record.delivery_fee || 0;
+    const total = record.total_price || subtotal + delivery;
+
+    printWindow.document.write(`
+    <html>
+      <head>
+      <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+        <title>Chek</title>
+        <style>
+          @media print {
+            @page {
+              size: 80mm auto;
+              margin: 0;
+            }
+            body {
+              font-family: "Poppins", sans-serif;
+              font-size: 12px;
+              width: 80mm;
+              padding: 5px;
+              display: flex;
+              flex-direction: column;
+              gap: 5px;
+            }
+            .header {
+              padding-bottom: 5px;
+              margin-bottom: 10px;
+              display: flex;
+              flex-direction: column;
+              gap: 5px;
+            }
+            .header h2 {
+              margin: 0;
+              font-size: 16px;
+              text-align: center;
+            }
+            .info {
+              font-size: 12px;
+              margin-bottom: 10px;
+              display: flex;
+              flex-direction: column;
+              gap: 5px;
+              align-items: end;
+            }
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+table th, table td {
+  padding: 4px 0;
+  border: 1px solid #000;
+  padding-inline: 5px;
+}
+
+table th {
+  font-weight: 600;
+  text-align: left;
+   background: #f0f0f0;
+}
+
+table td:nth-child(2) {
+  text-align: center; 
+}
+
+             table td:nth-child(3) {
+              text-align: right;
+            }
+
+            .footer {
+              margin-top: 10px;
+              border-top: 1px dashed #000;
+              padding-top: 5px;
+              text-align: center;
+              font-size: 12px;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h2>Bim - onlayn supermarket</h2>
+          <div>Buyurtma ID si: #${record._id.slice(-6)?.toUpperCase()}</div>
+          <div>Kuryer: ${record.courier_id.courier_name || "-"}</div>
+          <div>Vaqt: ${new Date(record.createdAt).toLocaleString("ru-RU")}</div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="text-align:left;">Mahsulot nomi</th>
+              <th style="text-align:center;">Miqdori</th>
+              <th style="text-align:right;">Narxi</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${productsHtml}
+          </tbody>
+        </table>
+
+        <div class="info">
+          <div>Mahsulot: ${subtotal.toLocaleString("ru-RU")}</div>
+          <div>Yetkazib berish: ${delivery.toLocaleString("ru-RU")}</div>
+          <div><b>UMUMIY: ${total.toLocaleString("ru-RU")} SO'M</b></div>
+        </div>
+
+        <div class="footer">
+          Xaridingiz uchun rahmat!
+        </div>
+      </body>
+    </html>
+  `);
+
+    printWindow.document.close();
+    printWindow.print();
+  };
 
   return (
     <div className="orders-page">

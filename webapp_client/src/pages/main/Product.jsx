@@ -1,9 +1,9 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useGetProductsQuery } from "../../context/services/product.service";
+import { useLazyGetProductsByQueryQuery } from "../../context/services/product.service";
 import { FaHeart, FaMinus, FaPlus, FaRegHeart } from "react-icons/fa";
 import { FaX } from "react-icons/fa6";
 import { Collapse, Space } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Card from "../../components/Card";
 const Product = () => {
   const { id } = useParams();
@@ -11,20 +11,31 @@ const Product = () => {
   if (!id) {
     window.location.href = "/";
   }
-  const { data: products = [] } = useGetProductsQuery();
   const [basket, setBasket] = useState(
     JSON.parse(localStorage.getItem("basket")) || []
   );
   const [wishes, setWishes] = useState(
     JSON.parse(localStorage.getItem("wishes")) || []
   );
-  const item = products?.find((p) => p._id === id) || {};
-  const discount = item?.discount_log?.find((d) => d.status === "active");
+  const [getProduct, { data: result = [] }] = useLazyGetProductsByQueryQuery();
+  const [getCategoryProducts, { data: categoryProducts = [] }] =
+    useLazyGetProductsByQueryQuery();
+
+  useEffect(() => {
+    getProduct({ product_id: id });
+  }, [getProduct, id]);
+  const item = result[0];
+  useEffect(() => {
+    getCategoryProducts({ category_id: item?.category._id });
+  }, [getCategoryProducts, item]);
+
+  const discount = item?.discount_log?.find((d) => d?.status === "active");
   const handleAddToBasket = () => {
     const updatedBasket = [
       ...basket,
       {
         product_id: item?._id,
+        product: item,
         quantity: item?.starting_quantity,
       },
     ];
@@ -32,11 +43,11 @@ const Product = () => {
     localStorage.setItem("basket", JSON.stringify(updatedBasket));
   };
   const handleIncrease = () => {
-    const updatedBasket = basket.map((p) => {
-      if (p.product_id === item?._id) {
+    const updatedBasket = basket?.map((p) => {
+      if (p?.product_id === item?._id) {
         return {
           ...p,
-          quantity: p.quantity + item?.starting_quantity,
+          quantity: Number((p?.quantity + item?.starting_quantity)?.toFixed(2)),
         };
       }
       return p;
@@ -46,29 +57,33 @@ const Product = () => {
   };
 
   const handleAddToWishes = () => {
-    const updatedWishes = [...wishes, item._id];
+    console.log("salom");
+    console.log(item);
+    const updatedWishes = [...wishes, item];
     setWishes(updatedWishes);
     localStorage.setItem("wishes", JSON.stringify(updatedWishes));
   };
   const handleRemoveFromWishes = () => {
-    const updatedWishes = wishes.filter((w) => w !== item._id);
+    const updatedWishes = wishes?.filter((w) => w._id !== item?._id);
     setWishes(updatedWishes);
     localStorage.setItem("wishes", JSON.stringify(updatedWishes));
   };
 
   const handleDecrease = () => {
-    const current = basket?.find((p) => p.product_id === item?._id);
+    const current = basket?.find((p) => p?.product_id === item?._id);
     if (!current) return;
-    if (current.quantity === item?.starting_quantity) {
-      const updatedBasket = basket.filter((p) => p.product_id !== item?._id);
+    if (current?.quantity <= item?.starting_quantity) {
+      const updatedBasket = basket?.filter((p) => p?.product_id !== item?._id);
       setBasket(updatedBasket);
       localStorage.setItem("basket", JSON.stringify(updatedBasket));
     } else {
-      const updatedBasket = basket.map((p) => {
-        if (p.product_id === item?._id) {
+      const updatedBasket = basket?.map((p) => {
+        if (p?.product_id === item?._id) {
           return {
             ...p,
-            quantity: p.quantity - item?.starting_quantity,
+            quantity: Number(
+              (p?.quantity - item?.starting_quantity)?.toFixed(2)
+            ),
           };
         }
         return p;
@@ -97,8 +112,8 @@ const Product = () => {
                   (
                     item?.selling_price -
                     (item?.selling_price / 100) * discount?.percent
-                  ).toFixed()
-                ).toLocaleString("ru-RU")}{" "}
+                  )?.toFixed()
+                )?.toLocaleString("ru-RU")}{" "}
                 so'm
               </b>
               <span className="discount-span">
@@ -108,15 +123,15 @@ const Product = () => {
           ) : (
             <p>{item?.selling_price?.toLocaleString("ru-RU")} so'm</p>
           )}
-          {basket?.find((p) => p.product_id === item?._id) ? (
+          {basket?.find((p) => p?.product_id === item?._id) ? (
             <div className="product-counter">
               <button onClick={handleDecrease}>
                 <FaMinus />
               </button>
               <p style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                {basket?.find((p) => p.product_id === item?._id)?.quantity}{" "}
-                {item.unit !== "dona" && (
-                  <span style={{ fontSize: "13px" }}>{item.unit}</span>
+                {basket?.find((p) => p?.product_id === item?._id)?.quantity}{" "}
+                {item?.unit !== "dona" && (
+                  <span style={{ fontSize: "13px" }}>{item?.unit}</span>
                 )}
               </p>
               <button onClick={handleIncrease}>
@@ -126,19 +141,19 @@ const Product = () => {
           ) : (
             <button
               onClick={handleAddToBasket}
-              disabled={item.status === "not_available"}
+              disabled={item?.status === "not_available"}
             >
-              {item.status === "not_available" ? "Mavjud emas" : "Savatga"}
+              {item?.status === "not_available" ? "Mavjud emas" : "Savatga"}
             </button>
           )}
         </div>
       </div>
 
       <div className="product-image">
-        <img src={item?.image_log?.find((i) => i.isMain).image_url} alt="" />
+        <img src={item?.image_log?.find((i) => i?.isMain)?.image_url} alt="" />
         <div className="actions">
           <button>
-            {wishes.find((w) => w === item._id) ? (
+            {wishes?.find((w) => w?._id === item?._id) ? (
               <FaHeart color="red" onClick={handleRemoveFromWishes} />
             ) : (
               <FaRegHeart onClick={handleAddToWishes} />
@@ -174,7 +189,7 @@ const Product = () => {
                   <label>
                     <strong>Yaroqlilik muddati</strong>
                     <br />
-                    <span>{item?.expiration} k.</span>
+                    <span>{item?.expiration} k?.</span>
                   </label>
                 </Space>
               ),
@@ -185,16 +200,9 @@ const Product = () => {
       <div className="extra-products">
         <h3>Yana nimadir olasizmi?</h3>
         <div className="extra-products-container">
-          {products
-            .filter(
-              (i) =>
-                i.category._id === item.category._id &&
-                i.status !== "not_available" &&
-                i._id !== item._id
-            )
-            .map((p) => (
-              <Card item={p} basket={basket} setBasket={setBasket} />
-            ))}
+          {categoryProducts?.map((p) => (
+            <Card key={p?._id} item={p} basket={basket} setBasket={setBasket} />
+          ))}
         </div>
       </div>
     </div>

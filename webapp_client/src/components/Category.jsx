@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
 import { useGetCategoriesQuery } from "../context/services/category.service";
-import { useGetProductsQuery } from "../context/services/product.service";
+import { useLazyGetProductsByQueryQuery } from "../context/services/product.service";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { IoSearchOutline } from "react-icons/io5";
 import Card from "./Card";
 import emptyShelf from "../assets/empty_shelf.avif";
+import EmptyCard from "./EmptyCard";
 const Category = () => {
   const { category } = useParams();
   if (!category) {
     window.location.href = "/";
   }
-  const { data: products = [] } = useGetProductsQuery();
+  const [getCategoryProducts, { data: categoryProducts = [] }] =
+    useLazyGetProductsByQueryQuery();
+  useEffect(() => {
+    getCategoryProducts({ category_id: category });
+  }, [getCategoryProducts, category]);
   const { data: categories = [] } = useGetCategoriesQuery();
   const [selectedCategory, setSelectedCategory] = useState({});
   const [basket, setBasket] = useState(
@@ -30,7 +35,7 @@ const Category = () => {
 
   useEffect(() => {
     setSelectedCategory(categories.find((c) => c._id === category));
-  }, [category, products, categories]);
+  }, [category, categories, categoryProducts]);
 
   return (
     <div className="extra-products" style={{ paddingBlockStart: "50px" }}>
@@ -60,7 +65,7 @@ const Category = () => {
           <button onClick={() => navigate("/")}>
             <FaArrowLeftLong />
           </button>
-          <h3>{selectedCategory.category}</h3>
+          <h3>{selectedCategory?.category}</h3>
           <button onClick={() => navigate("/search")}>
             <IoSearchOutline />
           </button>
@@ -69,13 +74,13 @@ const Category = () => {
 
       {selectedCategory?.subcategories?.map((item) => (
         <>
-          <p style={{ fontWeight: "600" }} id={item._id}>
+          <p style={{ fontWeight: "600" }} key={item._id} id={item._id}>
             {item.subcategory}
           </p>
           <div className="extra-products-container">
-            {products?.filter((i) => i.subcategory._id === item._id).length >
-            0 ? (
-              products
+            {categoryProducts?.filter((i) => i.subcategory._id === item._id)
+              .length > 0 ? (
+              categoryProducts
                 ?.filter((i) => i.subcategory._id === item._id)
                 ?.map((p) => (
                   <Card
@@ -86,16 +91,7 @@ const Category = () => {
                   />
                 ))
             ) : (
-              <div className="card">
-                <div className="card-image">
-                  <img src={emptyShelf} alt="" />
-                </div>
-                <div className="card-title">
-                  <h5 style={{ textAlign: "center" }}>
-                    Bu turkumda mahsulotlar yo'q
-                  </h5>
-                </div>
-              </div>
+              <EmptyCard />
             )}
           </div>
         </>

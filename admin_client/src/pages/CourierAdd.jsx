@@ -31,7 +31,7 @@ const CourierAdd = () => {
         courier_gender: courier.courier_gender,
       });
     }
-  }, [id, couriers]);
+  }, [id, couriers, form]);
 
   async function handleSubmitForm(values) {
     try {

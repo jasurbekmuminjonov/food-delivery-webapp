@@ -2,7 +2,6 @@ import { api } from "./api";
 
 export const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    // Barcha kuryerlarni olish
     getCouriers: builder.query({
       query: () => ({
         url: "/courier/get",
@@ -18,7 +17,6 @@ export const userApi = api.injectEndpoints({
       providesTags: ["User"],
     }),
 
-    // Kuryerni tahrirlash (ID orqali)
     blockUserToggle: builder.mutation({
       query: (id) => ({
         url: `/user/${id}`,
@@ -27,7 +25,6 @@ export const userApi = api.injectEndpoints({
       invalidatesTags: ["User"],
     }),
 
-    // Yangi kuryer yaratish
     createCourier: builder.mutation({
       query: (body) => ({
         url: "/courier/create",
@@ -37,7 +34,6 @@ export const userApi = api.injectEndpoints({
       invalidatesTags: ["Courier"],
     }),
 
-    // Login qilish
     loginAdmin: builder.mutation({
       query: (body) => ({
         url: "/admin/login",
@@ -46,7 +42,6 @@ export const userApi = api.injectEndpoints({
       }),
     }),
 
-    // Kuryerni tahrirlash (ID orqali)
     editCourier: builder.mutation({
       query: ({ id, body }) => ({
         url: `/courier/${id}`,
@@ -56,7 +51,6 @@ export const userApi = api.injectEndpoints({
       invalidatesTags: ["Courier"],
     }),
 
-    // Kuryer parolini tahrirlash
     editCourierPassword: builder.mutation({
       query: ({ id, body }) => ({
         url: `/courier/password/${id}`,

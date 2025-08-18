@@ -10,6 +10,7 @@ const Card = ({ item, basket, setBasket }) => {
       ...basket,
       {
         product_id: item._id,
+        product:item,
         quantity: item.starting_quantity,
       },
     ];
@@ -22,7 +23,7 @@ const Card = ({ item, basket, setBasket }) => {
       if (p.product_id === item._id) {
         return {
           ...p,
-          quantity: p.quantity + item.starting_quantity,
+          quantity: Number((p.quantity + item.starting_quantity)?.toFixed(2)),
         };
       }
       return p;
@@ -34,7 +35,7 @@ const Card = ({ item, basket, setBasket }) => {
   const handleDecrease = () => {
     const current = basket.find((p) => p.product_id === item._id);
     if (!current) return;
-    if (current.quantity === item.starting_quantity) {
+    if (current.quantity <= item.starting_quantity) {
       const updatedBasket = basket.filter((p) => p.product_id !== item._id);
       setBasket(updatedBasket);
       localStorage.setItem("basket", JSON.stringify(updatedBasket));
@@ -43,7 +44,7 @@ const Card = ({ item, basket, setBasket }) => {
         if (p.product_id === item._id) {
           return {
             ...p,
-            quantity: p.quantity - item.starting_quantity,
+            quantity: Number((p.quantity - item.starting_quantity)?.toFixed(2)),
           };
         }
         return p;

@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { TiLocationArrowOutline } from "react-icons/ti";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { GoogleMap, LoadScript } from "@react-google-maps/api";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCreateUserMutation } from "../../context/services/user.service";
 import { IoSearchOutline } from "react-icons/io5";
@@ -26,12 +26,12 @@ const Map = () => {
   const [searchParams] = useSearchParams();
   const lat = searchParams.get("lat");
   const long = searchParams.get("long");
-  const [createUser, { isLoading }] = useCreateUserMutation();
+  const [createUser] = useCreateUserMutation();
   const [isMoving, setIsMoving] = useState(false);
   const [position, setPosition] = useState(
     lat && long ? { lat: Number(lat), lng: Number(long) } : initialCenter
   );
-  const [zoom, setZoom] = useState(lat && long ? 15 : 10);
+  const [zoom, setZoom] = useState(lat && long ? 20 : 15);
   const [isOutside, setIsOutside] = useState(false);
   const mapRef = useRef(null);
   const navigate = useNavigate();
@@ -63,7 +63,7 @@ const Map = () => {
           setPosition(userLocation);
           if (mapRef.current) {
             mapRef.current.panTo(userLocation);
-            mapRef.current.setZoom(18);
+            setZoom(18);
           }
         },
         (error) => {

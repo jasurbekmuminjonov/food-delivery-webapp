@@ -61,7 +61,7 @@ const Couriers = () => {
                   <Input.Password size="small" />
                 </Form.Item>
                 <Form.Item>
-                  <Button type="primary" htmlType="submit" icon={<FaSave />}>
+                  <Button loading={passwordLoading} type="primary" htmlType="submit" icon={<FaSave />}>
                     O'zgartirish
                   </Button>
                 </Form.Item>

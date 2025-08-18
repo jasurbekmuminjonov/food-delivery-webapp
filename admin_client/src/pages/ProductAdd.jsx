@@ -20,7 +20,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { MdOutlinePreview } from "react-icons/md";
 import { cloneElement } from "react";
 import { useGetCategoriesQuery } from "../context/services/category.service";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const { TextArea } = Input;
 
@@ -34,6 +34,7 @@ const ProductAdd = () => {
   const { data: categories = [] } = useGetCategoriesQuery();
   const { id } = useParams();
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   const [editProduct] = useEditProductMutation();
   const [createProduct] = useCreateProductMutation();
@@ -53,6 +54,7 @@ const ProductAdd = () => {
           additionals = [],
           unit,
           unit_description,
+          starting_quantity,
           expiration,
           category,
           subcategory,
@@ -66,6 +68,7 @@ const ProductAdd = () => {
           selling_price,
           unit,
           unit_description,
+          starting_quantity,
           expiration,
           category: category._id,
           subcategory: subcategory._id,
@@ -78,7 +81,7 @@ const ProductAdd = () => {
         setSelectedCategory(cat);
       }
     }
-  }, [id, products, categories]);
+  }, [id, products, categories, form, isEdit]);
 
   const handleAddAdditional = () => {
     if (newAdditional.trim()) {
@@ -131,6 +134,7 @@ const ProductAdd = () => {
       setAdditionals([]);
       setFileList([]);
       setShowNutrition(true);
+      navigate("/product");
     } catch (err) {
       console.error("Xatolik:", err);
       message.error("Xatolik yuz berdi");
@@ -185,6 +189,16 @@ const ProductAdd = () => {
                 >
                   <Input
                     placeholder="Birlik tavsifi"
+                    style={{ width: "100%" }}
+                  />
+                </Form.Item>
+                <Form.Item
+                  name="starting_quantity"
+                  rules={[{ required: true }]}
+                  noStyle
+                >
+                  <InputNumber
+                    placeholder="Standart miqdor"
                     style={{ width: "100%" }}
                   />
                 </Form.Item>
@@ -255,7 +269,7 @@ const ProductAdd = () => {
                   value={newAdditional}
                   onChange={(e) => setNewAdditional(e.target.value)}
                 />
-                <Button type="primary" onClick={handleAddAdditional}>
+                <Button  onClick={handleAddAdditional}>
                   Qo'shish
                 </Button>
               </Space.Compact>
@@ -354,7 +368,7 @@ const ProductAdd = () => {
                   fileList={fileList}
                   beforeUpload={() => false}
                   onChange={handleFileChange}
-                  itemRender={(originNode, file, currFileList, actions) => {
+                  itemRender={(originNode, file, currFileList) => {
                     const index = currFileList.findIndex(
                       (f) => f.uid === file.uid
                     );

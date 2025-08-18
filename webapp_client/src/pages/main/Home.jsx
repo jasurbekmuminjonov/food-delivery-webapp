@@ -9,93 +9,106 @@ import { MdDeliveryDining } from "react-icons/md";
 import { PiArrowCounterClockwiseBold } from "react-icons/pi";
 import { IoLocationSharp, IoSearch } from "react-icons/io5";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { useGetProductsQuery } from "../../context/services/product.service";
+import { useLazyGetProductsByQueryQuery } from "../../context/services/product.service";
 import { useLazyGetUserByQueryQuery } from "../../context/services/user.service";
 import { useGetOrdersQuery } from "../../context/services/order.service";
 
-import ayol_gigiyenasi from "../../assets/images/ayol_gigiyenasi.png";
-import baliq_gazak from "../../assets/images/baliq_gazak.png";
-import biskvit from "../../assets/images/biskvit.png";
-import bolalar_aksesuar from "../../assets/images/bolalar_aksesuar.png";
-import bolalar_gigiyenasi from "../../assets/images/bolalar_gigiyenasi.png";
-import bolalar_ovqati from "../../assets/images/bolalar_ovqati.avif";
-import cheese from "../../assets/images/cheese.png";
-import choy from "../../assets/images/kofe_stakan.png";
-import egg from "../../assets/images/egg.png";
-import elektr from "../../assets/images/elektr.png";
-import energetik from "../../assets/images/energetik.png";
-import fish from "../../assets/images/baliq.png";
-import fruits from "../../assets/images/fruits.png";
-import gazlangan from "../../assets/images/gazlangan.png";
-import goshtli_konserva from "../../assets/images/goshtli_konserva.png";
-import hlebsty from "../../assets/images/hlebsty.png";
-import idish_uchun from "../../assets/images/idish_uchun.png";
-import itlar_uchun from "../../assets/images/itlar_uchun.png";
-import kanselyariy from "../../assets/images/kanselyariy.png";
-import kassada from "../../assets/images/kassada.webp";
-import kir_uchun from "../../assets/images/kir_uchun.png";
-import kofe from "../../assets/images/kofe.png";
-import kolbasa from "../../assets/images/kolbasa.png";
-import marmelad from "../../assets/images/marmelad.png";
-import mayda_buyumlar from "../../assets/images/mayda_buyumlar.png";
-import murabbo from "../../assets/images/murabbo.png";
-import meat from "../../assets/images/meat.png";
-import milk from "../../assets/images/milk.png";
-import mushuklar_uchun from "../../assets/images/mushuklar_uchun.png";
-import muzqaymoq from "../../assets/images/muzqaymoq.png";
-import non from "../../assets/images/non.png";
-import ogiz_uchun from "../../assets/images/ogiz_uchun.png";
-import oshxona_uchun from "../../assets/images/oshxona_uchun.png";
-import oyinchoq from "../../assets/images/oyinchoq.png";
-import oyoq_kiyim_uchun from "../../assets/images/oyoq_kiyim_uchun.png";
-import pechenye from "../../assets/images/pechenye.png";
-import pishiriq from "../../assets/images/pishiriq.png";
-import qatiq from "../../assets/images/qatiq.png";
-import qogoz from "../../assets/images/qogoz.png";
-import sabzavotli_konserva from "../../assets/images/sabzavotli_konserva.png";
-import dengiz from "../../assets/images/dengiz.webp";
-import shakar from "../../assets/images/shakar.png";
-import sharbat from "../../assets/images/sharbat.jpg";
-import shokolad from "../../assets/images/shokolad.png";
-import snek from "../../assets/images/snek.png";
-import soch_uchun from "../../assets/images/soch_uchun.png";
-import soqol_uchun from "../../assets/images/soqol_uchun.png";
-import sous from "../../assets/images/sous.png";
-import suv from "../../assets/images/suv.webp";
-import taglik from "../../assets/images/taglik.png";
-import tana_uchun from "../../assets/images/tana_uchun.png";
-import tez_pishiring from "../../assets/images/tez_pishiring.png";
-import tvorojok from "../../assets/images/tvorojok.png";
-import un from "../../assets/images/un.png";
-import vegetables from "../../assets/images/vegetables.png";
-import xilma_xil from "../../assets/images/xilma_xil.webp";
-import yigishtirish_uchun from "../../assets/images/yigishtirish_uchun.png";
-import yog from "../../assets/images/yog.png";
-import yogurt from "../../assets/images/yogurt.png";
-import yorma from "../../assets/images/yorma.png";
-import yuz_uchun from "../../assets/images/yuz_uchun.png";
-import ziravor from "../../assets/images/ziravor.png";
-import choy_quruq from "../../assets/images/choy_quruq.png";
+import ayol_gigiyenasi from "../../assets/categories/ayol_gigiyenasi.png";
+import baliq_gazak from "../../assets/categories/baliq_gazak.png";
+import biskvit from "../../assets/categories/biskvit.png";
+import bolalar_aksesuar from "../../assets/categories/bolalar_aksesuar.png";
+import bolalar_gigiyenasi from "../../assets/categories/bolalar_gigiyenasi.png";
+import bolalar_ovqati from "../../assets/categories/bolalar_ovqati.avif";
+import cheese from "../../assets/categories/cheese.png";
+import choy from "../../assets/categories/kofe_stakan.png";
+import egg from "../../assets/categories/egg.png";
+import elektr from "../../assets/categories/elektr.png";
+import energetik from "../../assets/categories/energetik.png";
+import fish from "../../assets/categories/baliq.png";
+import fruits from "../../assets/categories/fruits.png";
+import gazlangan from "../../assets/categories/gazlangan.png";
+import goshtli_konserva from "../../assets/categories/goshtli_konserva.png";
+import hlebsty from "../../assets/categories/hlebsty.png";
+import idish_uchun from "../../assets/categories/idish_uchun.png";
+import itlar_uchun from "../../assets/categories/itlar_uchun.png";
+import kanselyariy from "../../assets/categories/kanselyariy.png";
+import kassada from "../../assets/categories/kassada.webp";
+import kir_uchun from "../../assets/categories/kir_uchun.png";
+import kofe from "../../assets/categories/kofe.png";
+import kolbasa from "../../assets/categories/kolbasa.png";
+import marmelad from "../../assets/categories/marmelad.png";
+import mayda_buyumlar from "../../assets/categories/mayda_buyumlar.png";
+import murabbo from "../../assets/categories/murabbo.png";
+import meat from "../../assets/categories/meat.png";
+import milk from "../../assets/categories/milk.png";
+import mushuklar_uchun from "../../assets/categories/mushuklar_uchun.png";
+import muzqaymoq from "../../assets/categories/muzqaymoq.png";
+import non from "../../assets/categories/non.png";
+import ogiz_uchun from "../../assets/categories/ogiz_uchun.png";
+import oshxona_uchun from "../../assets/categories/oshxona_uchun.png";
+import oyinchoq from "../../assets/categories/oyinchoq.png";
+import oyoq_kiyim_uchun from "../../assets/categories/oyoq_kiyim_uchun.png";
+import pechenye from "../../assets/categories/pechenye.png";
+import pishiriq from "../../assets/categories/pishiriq.png";
+import qatiq from "../../assets/categories/qatiq.png";
+import qogoz from "../../assets/categories/qogoz.png";
+import sabzavotli_konserva from "../../assets/categories/sabzavotli_konserva.png";
+import dengiz from "../../assets/categories/dengiz.webp";
+import shakar from "../../assets/categories/shakar.png";
+import sharbat from "../../assets/categories/sharbat.jpg";
+import shokolad from "../../assets/categories/shokolad.png";
+import snek from "../../assets/categories/snek.png";
+import soch_uchun from "../../assets/categories/soch_uchun.png";
+import soqol_uchun from "../../assets/categories/soqol_uchun.png";
+import sous from "../../assets/categories/sous.png";
+import suv from "../../assets/categories/suv.webp";
+import taglik from "../../assets/categories/taglik.png";
+import tana_uchun from "../../assets/categories/tana_uchun.png";
+import tez_pishiring from "../../assets/categories/tez_pishiring.png";
+import tvorojok from "../../assets/categories/tvorojok.png";
+import un from "../../assets/categories/un.png";
+import vegetables from "../../assets/categories/vegetables.png";
+import xilma_xil from "../../assets/categories/xilma_xil.webp";
+import yigishtirish_uchun from "../../assets/categories/yigishtirish_uchun.png";
+import yog from "../../assets/categories/yog.png";
+import yogurt from "../../assets/categories/yogurt.png";
+import yorma from "../../assets/categories/yorma.png";
+import yuz_uchun from "../../assets/categories/yuz_uchun.png";
+import ziravor from "../../assets/categories/ziravor.png";
+import choy_quruq from "../../assets/categories/choy_quruq.png";
 
 import gift from "../../assets/gift.png";
 import aksiya from "../../assets/aksiya.png";
 import gift_ios from "../../assets/gift_ios.png";
 
 import Card from "../../components/Card";
+import Loading from "./Loading";
+import EmptyCard from "../../components/EmptyCard";
 const Home = () => {
-  const { data: products = [] } = useGetProductsQuery();
   const [aksiyaModal, setAksiyaModal] = useState(false);
   const { data: orders = [] } = useGetOrdersQuery();
   const [closing, setClosing] = useState(false);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
   const [getUser, { data: userData = {} }] = useLazyGetUserByQueryQuery();
+  const [getDiscountProducts, { data: discountedProducts = [] }] =
+    useLazyGetProductsByQueryQuery();
+  useEffect(() => {
+    getDiscountProducts({ discount: "true" });
+  }, [getDiscountProducts]);
+  const [getSweetProducts, { data: sweetProducts = [] }] =
+    useLazyGetProductsByQueryQuery();
+  useEffect(() => {
+    getSweetProducts({ category_id: "689483ea35da7e65ae3c4d5f" });
+  }, [getSweetProducts]);
 
   useEffect(() => {
     getUser(localStorage.getItem("telegram_id"));
-  }, []);
+  }, [getUser]);
 
   const [basket, setBasket] = useState(
     JSON.parse(localStorage.getItem("basket")) || []
@@ -129,17 +142,6 @@ const Home = () => {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
-  const discountedProducts = useMemo(() => {
-    const discounted = products.filter((item) =>
-      item.discount_log.some((d) => d.status === "active")
-    );
-    const sorted = discounted.sort(
-      (a, b) =>
-        b.discount_log.find((d) => d.status === "active")?.percent -
-        a.discount_log.find((d) => d.status === "active")?.percent
-    );
-    return sorted;
-  }, [products]);
 
   return (
     <div className="home">
@@ -181,9 +183,7 @@ const Home = () => {
               : Number(
                   basket
                     .reduce((acc, item) => {
-                      const product = products.find(
-                        (i) => i._id === item.product_id
-                      );
+                      const product = item.product;
 
                       if (!product) return acc;
 
@@ -208,7 +208,7 @@ const Home = () => {
         <div className="modal-container" onClick={closeModal}>
           <div className={`aksiya-modal ${closing ? "hide" : ""}`}>
             <div className="modal-image">
-              <img src={aksiya} alt="" />
+              <img loading="lazy" src={aksiya} alt="" />
             </div>
             <div className="modal-body">
               <h3>Birinchi buyurtma uchun sovg'a</h3>
@@ -216,7 +216,13 @@ const Home = () => {
                 Birinchi buyurtma uchun qo'shimcha sovg'ani qabul qilib oling.
                 Aksiya barcha turdagi mahsulotlarga amal qiladi. Buyurtma
                 summasi 250 000 so'mda oshishi kerak{" "}
-                <img width="15px" height="15px" src={gift_ios} alt="" />
+                <img
+                  loading="lazy"
+                  width="15px"
+                  height="15px"
+                  src={gift_ios}
+                  alt=""
+                />
               </p>
               <br />
               <button onClick={closeModal}>Hohlayman!</button>
@@ -276,7 +282,7 @@ const Home = () => {
       </div>
       <div className="box" onClick={() => setAksiyaModal(true)}>
         <div>
-          <img src={gift} alt="gift" />
+          <img loading="lazy" src={gift} alt="gift" />
           <p>
             Birinchi 250 000 so'mdan <br /> oshgan buyurtma uchun sovg'a
           </p>
@@ -293,12 +299,17 @@ const Home = () => {
         <div className="discount-body">
           {discountedProducts.length > 0 ? (
             discountedProducts
-              ?.slice(0, 4)
+              ?.slice(0, 6)
               ?.map((item) => (
-                <Card basket={basket} setBasket={setBasket} item={item} />
+                <Card
+                  key={item._id}
+                  basket={basket}
+                  setBasket={setBasket}
+                  item={item}
+                />
               ))
           ) : (
-            <div className="card"></div>
+            <EmptyCard />
           )}
         </div>
       </div>
@@ -315,7 +326,7 @@ const Home = () => {
             style={{ background: "#C1E2D9" }}
           >
             <p>Sabzavot, qo'ziqorin, ko'katlar</p>
-            <img src={vegetables} alt="vegetables" />
+            <img loading="lazy" src={vegetables} alt="vegetables" />
           </div>
           <div
             onClick={() =>
@@ -327,7 +338,7 @@ const Home = () => {
             style={{ background: "#C1E2D9" }}
           >
             <p>Mevalar va rezavorlar</p>
-            <img src={fruits} alt="fruits" />
+            <img loading="lazy" src={fruits} alt="fruits" />
           </div>
         </div>
       </div>
@@ -343,7 +354,7 @@ const Home = () => {
             className="category-item"
           >
             <p>Sut va sariyog'</p>
-            <img src={milk} alt="" />
+            <img loading="lazy" src={milk} alt="" />
           </div>
           <div
             onClick={() =>
@@ -354,7 +365,7 @@ const Home = () => {
             className="category-item"
           >
             <p>Tuxum</p>
-            <img src={egg} alt="" />
+            <img loading="lazy" src={egg} alt="" />
           </div>
           <div
             onClick={() =>
@@ -365,7 +376,7 @@ const Home = () => {
             className="category-item"
           >
             <p>Tvorojok va siroklar</p>
-            <img src={tvorojok} alt="" />
+            <img loading="lazy" src={tvorojok} alt="" />
           </div>
           <div
             onClick={() =>
@@ -376,7 +387,7 @@ const Home = () => {
             className="category-item"
           >
             <p>Yogurt</p>
-            <img src={yogurt} alt="" />
+            <img loading="lazy" src={yogurt} alt="" />
           </div>
           <div
             onClick={() =>
@@ -387,7 +398,7 @@ const Home = () => {
             className="category-item"
           >
             <p>Pishloq</p>
-            <img src={cheese} alt="" />
+            <img loading="lazy" src={cheese} alt="" />
           </div>
           <div
             onClick={() =>
@@ -398,7 +409,7 @@ const Home = () => {
             className="category-item"
           >
             <p>Qatiqli mahsulotlar</p>
-            <img src={qatiq} alt="" />
+            <img loading="lazy" src={qatiq} alt="" />
           </div>
         </div>
       </div>
@@ -410,9 +421,20 @@ const Home = () => {
           </button>
         </div>
         <div className="discount-body">
-          {discountedProducts?.slice(0, 4)?.map((item) => (
-            <Card basket={basket} setBasket={setBasket} item={item} />
-          ))}
+          {discountedProducts.length > 0 ? (
+            discountedProducts
+              ?.slice(0, 6)
+              ?.map((item) => (
+                <Card
+                  key={item._id}
+                  basket={basket}
+                  setBasket={setBasket}
+                  item={item}
+                />
+              ))
+          ) : (
+            <EmptyCard />
+          )}
         </div>
       </div>
       <div className="category-container">
@@ -428,7 +450,7 @@ const Home = () => {
             style={{ background: "#EFC6E4" }}
           >
             <p>Go'sht va parranda</p>
-            <img src={meat} alt="vegetables" />
+            <img loading="lazy" src={meat} alt="vegetables" />
           </div>
           <div
             onClick={() =>
@@ -440,7 +462,7 @@ const Home = () => {
             style={{ background: "#EFC6E4" }}
           >
             <p>Kolbasa mahsulotlari</p>
-            <img src={kolbasa} alt="fruits" />
+            <img loading="lazy" src={kolbasa} alt="fruits" />
           </div>
         </div>
       </div>
@@ -457,7 +479,12 @@ const Home = () => {
             style={{ background: "#D9E5F3" }}
           >
             <p>Baliq</p>
-            <img style={{ height: "50px", width: "75px" }} src={fish} alt="" />
+            <img
+              loading="lazy"
+              style={{ height: "50px", width: "75px" }}
+              src={fish}
+              alt=""
+            />
           </div>
           <div
             onClick={() =>
@@ -469,7 +496,7 @@ const Home = () => {
             style={{ background: "#D9E5F3" }}
           >
             <p>Dengiz mahsulotlari</p>
-            <img src={dengiz} alt="" />
+            <img loading="lazy" src={dengiz} alt="" />
           </div>
           <div
             onClick={() =>
@@ -481,7 +508,7 @@ const Home = () => {
             style={{ background: "#D9E5F3" }}
           >
             <p>Baliqli gazaklar</p>
-            <img src={baliq_gazak} alt="" />
+            <img loading="lazy" src={baliq_gazak} alt="" />
           </div>
         </div>
       </div>
@@ -498,7 +525,12 @@ const Home = () => {
             style={{ background: "#E6E1F5" }}
           >
             <p>Suv</p>
-            <img style={{ width: "75px", height: "100px" }} src={suv} alt="" />
+            <img
+              loading="lazy"
+              style={{ width: "75px", height: "100px" }}
+              src={suv}
+              alt=""
+            />
           </div>
           <div
             onClick={() =>
@@ -511,6 +543,7 @@ const Home = () => {
           >
             <p>Gazlangan ichimliklar</p>
             <img
+              loading="lazy"
               style={{ height: "100px", width: "75px" }}
               src={gazlangan}
               alt=""
@@ -527,6 +560,7 @@ const Home = () => {
           >
             <p>Sharbatlar va morslar</p>
             <img
+              loading="lazy"
               style={{ width: "30px", marginRight: "5px", marginBottom: "5px" }}
               src={sharbat}
               alt=""
@@ -543,6 +577,7 @@ const Home = () => {
           >
             <p>Yaxna choy va qahva</p>
             <img
+              loading="lazy"
               style={{ width: "55px", marginRight: "5px" }}
               src={choy}
               alt=""
@@ -558,7 +593,12 @@ const Home = () => {
             style={{ background: "#E6E1F5" }}
           >
             <p>Energetik ichimliklar</p>
-            <img style={{ width: "65px" }} src={energetik} alt="" />
+            <img
+              loading="lazy"
+              style={{ width: "65px" }}
+              src={energetik}
+              alt=""
+            />
           </div>
         </div>
       </div>
@@ -572,16 +612,20 @@ const Home = () => {
           </button>
         </div>
         <div className="discount-body">
-          {discountedProducts
-            ?.filter(
-              (p) =>
-                p.status === "available" &&
-                p.category._id === "689483ea35da7e65ae3c4d5f"
-            )
-            .slice(0, 4)
-            ?.map((item) => (
-              <Card basket={basket} setBasket={setBasket} item={item} />
-            ))}
+          {sweetProducts.length > 0 ? (
+            sweetProducts
+              ?.slice(0, 6)
+              ?.map((item) => (
+                <Card
+                  key={item._id}
+                  basket={basket}
+                  setBasket={setBasket}
+                  item={item}
+                />
+              ))
+          ) : (
+            <EmptyCard />
+          )}
         </div>
       </div>
       <div className="category-container">
@@ -597,7 +641,7 @@ const Home = () => {
             style={{ background: "#F6D9DE" }}
           >
             <p>Shokolad va konfetlar</p>
-            <img src={shokolad} alt="" />
+            <img loading="lazy" src={shokolad} alt="" />
           </div>
           <div
             onClick={() =>
@@ -610,6 +654,7 @@ const Home = () => {
           >
             <p>Biskvit</p>
             <img
+              loading="lazy"
               style={{ width: "75px", height: "50px" }}
               src={biskvit}
               alt=""
@@ -626,6 +671,7 @@ const Home = () => {
           >
             <p>Pechenye va vafli</p>
             <img
+              loading="lazy"
               style={{ width: "75px", height: "50px", marginBottom: "5px" }}
               src={pechenye}
               alt=""
@@ -641,7 +687,7 @@ const Home = () => {
             style={{ background: "#F6D9DE" }}
           >
             <p>Pastila va marmelad</p>
-            <img src={marmelad} alt="" />
+            <img loading="lazy" src={marmelad} alt="" />
           </div>
           <div
             onClick={() =>
@@ -654,6 +700,7 @@ const Home = () => {
           >
             <p>Murabbo va pastalar</p>
             <img
+              loading="lazy"
               style={{ width: "50px", marginRight: "5px " }}
               src={murabbo}
               alt=""
@@ -670,6 +717,7 @@ const Home = () => {
           >
             <p>Kassada</p>
             <img
+              loading="lazy"
               style={{ width: "50px", height: "75px" }}
               src={kassada}
               alt=""
@@ -690,7 +738,7 @@ const Home = () => {
             style={{ background: "#DFF2EE" }}
           >
             <p>Makaronlar yormalar va un</p>
-            <img src={un} alt="" />
+            <img loading="lazy" src={un} alt="" />
           </div>
           <div
             onClick={() =>
@@ -703,6 +751,7 @@ const Home = () => {
           >
             <p>Yormalar va myusli</p>
             <img
+              loading="lazy"
               style={{ width: "50px", marginRight: "5px" }}
               src={yorma}
               alt=""
@@ -719,6 +768,7 @@ const Home = () => {
           >
             <p>Yog'</p>
             <img
+              loading="lazy"
               style={{ width: "40px", marginRight: "5px" }}
               src={yog}
               alt=""
@@ -734,7 +784,12 @@ const Home = () => {
             style={{ background: "#DFF2EE" }}
           >
             <p>Souslar</p>
-            <img style={{ width: "50px", height: "100px" }} src={sous} alt="" />
+            <img
+              loading="lazy"
+              style={{ width: "50px", height: "100px" }}
+              src={sous}
+              alt=""
+            />
           </div>
           <div
             onClick={() =>
@@ -747,6 +802,7 @@ const Home = () => {
           >
             <p>Shakar</p>
             <img
+              loading="lazy"
               style={{ width: "40px", marginRight: "5px" }}
               src={shakar}
               alt=""
@@ -763,6 +819,7 @@ const Home = () => {
           >
             <p>Ziravorlar</p>
             <img
+              loading="lazy"
               style={{ width: "50px", marginRight: "5px" }}
               src={ziravor}
               alt=""
@@ -779,6 +836,7 @@ const Home = () => {
           >
             <p>Choy</p>
             <img
+              loading="lazy"
               style={{ width: "50px", marginRight: "5px" }}
               src={choy_quruq}
               alt=""
@@ -795,6 +853,7 @@ const Home = () => {
           >
             <p>Qahva va kakao</p>
             <img
+              loading="lazy"
               style={{ width: "35px", marginRight: "5px" }}
               src={kofe}
               alt=""
@@ -811,6 +870,7 @@ const Home = () => {
           >
             <p>Sneklar</p>
             <img
+              loading="lazy"
               style={{ width: "50px", marginRight: "5px" }}
               src={snek}
               alt=""
@@ -832,6 +892,7 @@ const Home = () => {
           >
             <p>Non</p>
             <img
+              loading="lazy"
               style={{ width: "65px", marginRight: "5px" }}
               src={non}
               alt=""
@@ -847,7 +908,7 @@ const Home = () => {
             style={{ background: "#FCEDDA" }}
           >
             <p>Pishiriqlar</p>
-            <img src={pishiriq} alt="" />
+            <img loading="lazy" src={pishiriq} alt="" />
           </div>
           <div
             onClick={() =>
@@ -859,7 +920,7 @@ const Home = () => {
             style={{ background: "#FCEDDA" }}
           >
             <p>Xlebtsy</p>
-            <img src={hlebsty} alt="" />
+            <img loading="lazy" src={hlebsty} alt="" />
           </div>
         </div>
       </div>
@@ -876,7 +937,7 @@ const Home = () => {
             style={{ background: "#B9CCEA" }}
           >
             <p>Muzqaymoq va muz</p>
-            <img src={muzqaymoq} alt="vegetables" />
+            <img loading="lazy" src={muzqaymoq} alt="vegetables" />
           </div>
           <div
             onClick={() =>
@@ -888,7 +949,7 @@ const Home = () => {
             style={{ background: "#B9CCEA" }}
           >
             <p>Tez pishiring</p>
-            <img src={tez_pishiring} alt="fruits" />
+            <img loading="lazy" src={tez_pishiring} alt="fruits" />
           </div>
         </div>
       </div>
@@ -905,7 +966,7 @@ const Home = () => {
             style={{ background: "#DAE6F4" }}
           >
             <p>Sabzavotli va mevali</p>
-            <img src={sabzavotli_konserva} alt="vegetables" />
+            <img loading="lazy" src={sabzavotli_konserva} alt="vegetables" />
           </div>
           <div
             onClick={() =>
@@ -917,7 +978,7 @@ const Home = () => {
             style={{ background: "#DAE6F4" }}
           >
             <p>Go'shtli va baliqli</p>
-            <img src={goshtli_konserva} alt="fruits" />
+            <img loading="lazy" src={goshtli_konserva} alt="fruits" />
           </div>
         </div>
       </div>
@@ -934,7 +995,7 @@ const Home = () => {
             style={{ background: "#F6C58A" }}
           >
             <p>Bolalar ovqatlari</p>
-            <img src={bolalar_ovqati} alt="" />
+            <img loading="lazy" src={bolalar_ovqati} alt="" />
           </div>
           <div
             onClick={() =>
@@ -946,7 +1007,7 @@ const Home = () => {
             style={{ background: "#F6C58A" }}
           >
             <p>Tagliklar va salfetkalar</p>
-            <img src={taglik} alt="" />
+            <img loading="lazy" src={taglik} alt="" />
           </div>
           <div
             onClick={() =>
@@ -959,6 +1020,7 @@ const Home = () => {
           >
             <p>Bolalar gigiyenasi</p>
             <img
+              loading="lazy"
               style={{ width: "75px", marginBlock: "5px", marginRight: "5px" }}
               src={bolalar_gigiyenasi}
               alt=""
@@ -974,7 +1036,7 @@ const Home = () => {
             style={{ background: "#F6C58A" }}
           >
             <p>Idishlar va aksessuarlar</p>
-            <img src={bolalar_aksesuar} alt="" />
+            <img loading="lazy" src={bolalar_aksesuar} alt="" />
           </div>
           <div
             onClick={() =>
@@ -986,7 +1048,12 @@ const Home = () => {
             style={{ background: "#F6C58A" }}
           >
             <p>O'yinchoqlar</p>
-            <img style={{ width: "70px" }} src={oyinchoq} alt="" />
+            <img
+              loading="lazy"
+              style={{ width: "70px" }}
+              src={oyinchoq}
+              alt=""
+            />
           </div>
         </div>
       </div>
@@ -1003,7 +1070,7 @@ const Home = () => {
             style={{ background: "#F9DDB8" }}
           >
             <p>Mushuklar uchun</p>
-            <img src={mushuklar_uchun} alt="vegetables" />
+            <img loading="lazy" src={mushuklar_uchun} alt="vegetables" />
           </div>
           <div
             onClick={() =>
@@ -1015,7 +1082,7 @@ const Home = () => {
             style={{ background: "#F9DDB8" }}
           >
             <p>Itlar uchun</p>
-            <img src={itlar_uchun} alt="fruits" />
+            <img loading="lazy" src={itlar_uchun} alt="fruits" />
           </div>
         </div>
       </div>
@@ -1032,7 +1099,7 @@ const Home = () => {
             style={{ background: "#AD9CE0" }}
           >
             <p>Tana uchun</p>
-            <img src={tana_uchun} alt="" />
+            <img loading="lazy" src={tana_uchun} alt="" />
           </div>
           <div
             onClick={() =>
@@ -1044,7 +1111,12 @@ const Home = () => {
             style={{ background: "#AD9CE0" }}
           >
             <p>Soch uchun</p>
-            <img style={{ width: "75px" }} src={soch_uchun} alt="" />
+            <img
+              loading="lazy"
+              style={{ width: "75px" }}
+              src={soch_uchun}
+              alt=""
+            />
           </div>
           <div
             onClick={() =>
@@ -1057,6 +1129,7 @@ const Home = () => {
           >
             <p>Yuz uchun</p>
             <img
+              loading="lazy"
               style={{ width: "50px", height: "100px" }}
               src={yuz_uchun}
               alt=""
@@ -1072,7 +1145,7 @@ const Home = () => {
             style={{ background: "#AD9CE0" }}
           >
             <p>Soqol olish uchun</p>
-            <img src={soqol_uchun} alt="" />
+            <img loading="lazy" src={soqol_uchun} alt="" />
           </div>
           <div
             onClick={() =>
@@ -1084,7 +1157,7 @@ const Home = () => {
             style={{ background: "#AD9CE0" }}
           >
             <p>Ayol gigiyenasi</p>
-            <img src={ayol_gigiyenasi} alt="" />
+            <img loading="lazy" src={ayol_gigiyenasi} alt="" />
           </div>
           <div
             onClick={() =>
@@ -1097,6 +1170,7 @@ const Home = () => {
           >
             <p>Og'iz bo'shlig'i uchun</p>
             <img
+              loading="lazy"
               style={{ marginBottom: "5px", marginRight: "5px" }}
               src={ogiz_uchun}
               alt=""
@@ -1113,6 +1187,7 @@ const Home = () => {
           >
             <p>Foydali mayda buyumlar</p>
             <img
+              loading="lazy"
               style={{ width: "65px", marginBottom: "5px", marginRight: "5px" }}
               src={mayda_buyumlar}
               alt=""
@@ -1133,7 +1208,12 @@ const Home = () => {
             style={{ background: "#DEF1ED" }}
           >
             <p>Idishlar uchun</p>
-            <img style={{ width: "75px" }} src={idish_uchun} alt="" />
+            <img
+              loading="lazy"
+              style={{ width: "75px" }}
+              src={idish_uchun}
+              alt=""
+            />
           </div>
           <div
             onClick={() =>
@@ -1146,6 +1226,7 @@ const Home = () => {
           >
             <p>Kir yuvish uchun</p>
             <img
+              loading="lazy"
               style={{ width: "50px", marginRight: "5px", marginBottom: "5px" }}
               src={kir_uchun}
               alt=""
@@ -1162,6 +1243,7 @@ const Home = () => {
           >
             <p>Yig'ishtirish uchun</p>
             <img
+              loading="lazy"
               style={{ width: "50px", marginRight: "5px", marginBottom: "5px" }}
               src={yigishtirish_uchun}
               alt=""
@@ -1182,7 +1264,7 @@ const Home = () => {
             style={{ background: "#FFF1DE" }}
           >
             <p>Qog'oz va salfetkalar</p>
-            <img style={{ width: "80px" }} src={qogoz} alt="" />
+            <img loading="lazy" style={{ width: "80px" }} src={qogoz} alt="" />
           </div>
           <div
             onClick={() =>
@@ -1194,7 +1276,7 @@ const Home = () => {
             style={{ background: "#FFF1DE" }}
           >
             <p>Oshxona uchun</p>
-            <img src={oshxona_uchun} alt="" />
+            <img loading="lazy" src={oshxona_uchun} alt="" />
           </div>
           <div
             onClick={() =>
@@ -1206,7 +1288,7 @@ const Home = () => {
             style={{ background: "#FFF1DE" }}
           >
             <p>Kiyim va oyoq kiyimi uchun</p>
-            <img src={oyoq_kiyim_uchun} alt="" />
+            <img loading="lazy" src={oyoq_kiyim_uchun} alt="" />
           </div>
           <div
             onClick={() =>
@@ -1218,7 +1300,7 @@ const Home = () => {
             style={{ background: "#FFF1DE" }}
           >
             <p>Xilma-xil buyumlar</p>
-            <img src={xilma_xil} alt="" />
+            <img loading="lazy" src={xilma_xil} alt="" />
           </div>
           <div
             onClick={() =>
@@ -1230,7 +1312,7 @@ const Home = () => {
             style={{ background: "#FFF1DE" }}
           >
             <p>Elektr jihozlari</p>
-            <img src={elektr} alt="" />
+            <img loading="lazy" src={elektr} alt="" />
           </div>
           <div
             onClick={() =>
@@ -1242,7 +1324,7 @@ const Home = () => {
             style={{ background: "#FFF1DE" }}
           >
             <p>Kanselyariya buyumlari</p>
-            <img src={kanselyariy} alt="" />
+            <img loading="lazy" src={kanselyariy} alt="" />
           </div>
         </div>
       </div>

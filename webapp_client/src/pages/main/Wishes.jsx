@@ -1,4 +1,3 @@
-import { useGetProductsQuery } from "../../context/services/product.service";
 import { useState } from "react";
 import Card from "../../components/Card";
 import { FaArrowLeftLong } from "react-icons/fa6";
@@ -7,13 +6,10 @@ import { IoSearchOutline } from "react-icons/io5";
 import Empty from "../../components/Empty";
 
 const Wishes = () => {
-  const { data: products = [] } = useGetProductsQuery();
   const [basket, setBasket] = useState(
     JSON.parse(localStorage.getItem("basket")) || []
   );
-  const [wishes, setWishes] = useState(
-    JSON.parse(localStorage.getItem("wishes")) || []
-  );
+  const wishes = JSON.parse(localStorage.getItem("wishes")) || [];
 
   const navigate = useNavigate();
   return (
@@ -27,13 +23,11 @@ const Wishes = () => {
           <IoSearchOutline />
         </button>
       </div>
-      {products.filter((i) => wishes.includes(i._id)).length > 0 ? (
+      {wishes.length > 0 ? (
         <div className="extra-products-container">
-          {products
-            .filter((i) => wishes.includes(i._id))
-            .map((p) => (
-              <Card item={p} basket={basket} setBasket={setBasket} />
-            ))}
+          {wishes.map((p) => (
+            <Card key={p._id} item={p} basket={basket} setBasket={setBasket} />
+          ))}
         </div>
       ) : (
         <Empty text="Bu yerda hali hech narsa yo'q. Tovar kartasidagi yurakchaga bosing va u bu yerga tushadi" />

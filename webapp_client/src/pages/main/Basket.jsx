@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { FaCheck } from "react-icons/fa";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import { useGetProductsQuery } from "../../context/services/product.service";
 import { useLazyGetUserByQueryQuery } from "../../context/services/user.service";
 import { FiMinus, FiPlus } from "react-icons/fi";
 import { IoSearchOutline } from "react-icons/io5";
@@ -15,7 +14,6 @@ import {
 import Empty from "../../components/Empty";
 const Basket = () => {
   const navigate = useNavigate();
-  const { data: products = [] } = useGetProductsQuery();
   const [confirmModal, setConfirmModal] = useState(false);
   const [closing, setClosing] = useState(false);
   const { data: orders = [] } = useGetOrdersQuery();
@@ -37,14 +35,14 @@ const Basket = () => {
 
   useEffect(() => {
     getUser(localStorage.getItem("telegram_id"));
-  }, []);
+  }, [getUser]);
   useEffect(() => {
     setSelectedCourier(userData.user_gender);
   }, [userData]);
 
   useEffect(() => {
     const total = basket.reduce((acc, item) => {
-      const product = products.find((i) => i._id === item.product_id);
+      const product = item.product;
       if (!product) return acc;
 
       const discount = product.discount_log?.find((d) => d.status === "active");
@@ -58,13 +56,13 @@ const Basket = () => {
     }, 0);
 
     setTotalPrice(total);
-  }, [basket, products]);
+  }, [basket]);
   const handleIncrease = (item) => {
     const updatedBasket = basket.map((p) => {
       if (p.product_id === item._id) {
         return {
           ...p,
-          quantity: p.quantity + item.starting_quantity,
+          quantity: Number((p.quantity + item.starting_quantity)?.toFixed(2)),
         };
       }
       return p;
@@ -76,7 +74,7 @@ const Basket = () => {
   const handleDecrease = (item) => {
     const current = basket.find((p) => p.product_id === item._id);
     if (!current) return;
-    if (current.quantity === item.starting_quantity) {
+    if (current.quantity <= item.starting_quantity) {
       const updatedBasket = basket.filter((p) => p.product_id !== item._id);
       setBasket(updatedBasket);
       localStorage.setItem("basket", JSON.stringify(updatedBasket));
@@ -85,7 +83,7 @@ const Basket = () => {
         if (p.product_id === item._id) {
           return {
             ...p,
-            quantity: p.quantity - item.starting_quantity,
+            quantity: Number((p.quantity - item.starting_quantity)?.toFixed(2)),
           };
         }
         return p;
@@ -94,10 +92,6 @@ const Basket = () => {
       localStorage.setItem("basket", JSON.stringify(updatedBasket));
     }
   };
-
-  function returnProductFromId(id) {
-    return products.find((p) => p._id === id);
-  }
 
   const closeModal = () => {
     setClosing(true);
@@ -110,7 +104,7 @@ const Basket = () => {
   async function handleSubmit() {
     try {
       const newBasket = basket.map((p) => {
-        const product = returnProductFromId(p.product_id);
+        const product = p.product;
         const activeDiscount = product.discount_log.find(
           (d) => d.status === "active"
         );
@@ -162,18 +156,34 @@ const Basket = () => {
             className={`aksiya-modal ${closing ? "hide" : ""}`}
           >
             <div className="modal-body">
-              <h3 style={{ fontSize: "18px", fontWeight: "600" }}>
-                Buyurtma berishga ishonchingiz komilmi?
-              </h3>
-              <p>
-                Agarda buyurtmani bergach, bekor qilsangiz hisobingiz
-                bloklanishi mumkin
-              </p>
-              <br />
-              <div>
-                <button onClick={closeModal}>Yo'q</button>
-                <button onClick={handleSubmit}>Albatta</button>
-              </div>
+              {userData.isBlocked ? (
+                <>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600" }}>
+                    Sizning hisobingiz bloklangan
+                  </h3>
+                  <p>
+                    Hisobingiz qoidalarga zid faoliyat tufayli bloklandi.
+                    Batafsil ma'lumot uchun biz bilan bog'laning
+                  </p>
+
+                  <button onClick={closeModal}>Ok</button>
+                </>
+              ) : (
+                <>
+                  <h3 style={{ fontSize: "18px", fontWeight: "600" }}>
+                    Buyurtma berishga ishonchingiz komilmi?
+                  </h3>
+                  <p>
+                    Agarda buyurtmani bergach, bekor qilsangiz hisobingiz
+                    bloklanishi mumkin
+                  </p>
+                  <br />
+                  <div>
+                    <button onClick={closeModal}>Yo'q</button>
+                    <button onClick={handleSubmit}>Albatta</button>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -186,7 +196,12 @@ const Basket = () => {
           <button onClick={() => navigate("/search")}>
             <IoSearchOutline size={18} />
           </button>
-          <button>
+          <button
+            onClick={() => {
+              localStorage.removeItem("basket");
+              setBasket([]);
+            }}
+          >
             <AiOutlineDelete size={18} />
           </button>
         </div>
@@ -211,75 +226,51 @@ const Basket = () => {
           </div>
           <div className="basket-products">
             {basket.map((p) => (
-              <div className="basket-product">
+              <div key={p.product_id} className="basket-product">
                 <img
-                  src={
-                    returnProductFromId(p.product_id).image_log.find(
-                      (i) => i.isMain
-                    ).image_url
-                  }
+                  src={p.product.image_log.find((i) => i.isMain).image_url}
                   alt=""
                 />
                 <div className="basket-title">
-                  <p>{returnProductFromId(p.product_id).product_name}</p>
-                  {returnProductFromId(p.product_id).discount_log.find(
-                    (d) => d.status === "active"
-                  ) ? (
+                  <p>{p.product.product_name}</p>
+                  {p.product.discount_log.find((d) => d.status === "active") ? (
                     <>
                       <b>
                         {Number(
                           (
-                            returnProductFromId(p.product_id).selling_price -
-                            (returnProductFromId(p.product_id).selling_price /
-                              100) *
-                              returnProductFromId(
-                                p.product_id
-                              ).discount_log.find((d) => d.status === "active")
-                                ?.percent
+                            p.product.selling_price -
+                            (p.product.selling_price / 100) *
+                              p.product.discount_log.find(
+                                (d) => d.status === "active"
+                              )?.percent
                           ).toFixed()
                         ).toLocaleString("ru-RU")}{" "}
                         so'm
                       </b>
                       <span>
-                        {returnProductFromId(
-                          p.product_id
-                        ).selling_price?.toLocaleString("ru-RU")}{" "}
-                        so'm
+                        {p.product.selling_price?.toLocaleString("ru-RU")} so'm
                       </span>
                     </>
                   ) : (
                     <h4 style={{ fontWeight: "500" }}>
-                      {returnProductFromId(
-                        p.product_id
-                      ).selling_price?.toLocaleString("ru-RU")}{" "}
-                      so'm
+                      {p.product.selling_price?.toLocaleString("ru-RU")} so'm
                     </h4>
                   )}
 
-                  <h5>{returnProductFromId(p.product_id).unit_description}</h5>
+                  <h5>{p.product.unit_description}</h5>
                 </div>
                 <div className="counter">
-                  <button
-                    onClick={() =>
-                      handleDecrease(returnProductFromId(p.product_id))
-                    }
-                  >
+                  <button onClick={() => handleDecrease(p.product)}>
                     <FiMinus />
                   </button>
                   <p>
                     {p.quantity}{" "}
-                    {returnProductFromId(p.product_id).unit !== "dona" && (
-                      <span style={{ fontSize: "13px" }}>
-                        {returnProductFromId(p.product_id).unit}
-                      </span>
+                    {p.product.unit !== "dona" && (
+                      <span style={{ fontSize: "13px" }}>{p.product.unit}</span>
                     )}
                   </p>
 
-                  <button
-                    onClick={() =>
-                      handleIncrease(returnProductFromId(p.product_id))
-                    }
-                  >
+                  <button onClick={() => handleIncrease(p.product)}>
                     <FiPlus />
                   </button>
                 </div>
@@ -311,7 +302,6 @@ const Basket = () => {
               </button>
             </div>
           </div>
-
           <div className="progress">
             <strong>To'lov usuli</strong>
             <p style={{ display: "flex", alignItems: "center", gap: "5px" }}>

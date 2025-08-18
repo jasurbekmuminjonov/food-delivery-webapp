@@ -28,7 +28,7 @@ const ProductSchema = new mongoose.Schema(
     starting_quantity: {
       type: Number,
       required: true,
-    },  
+    },
     expiration: {
       type: Number,
       default: null,

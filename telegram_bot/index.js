@@ -5,6 +5,8 @@ const axios = require("axios");
 const token = process.env.BOT_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
+// const GET_URL = "https://kwmkqg1t-8080.euw.devtunnels.ms/api/v1/basic/user/get";
+// const POST_URL = "https://kwmkqg1t-8080.euw.devtunnels.ms/api/v1/basic/user/create";
 const GET_URL = "http://localhost:8080/api/v1/basic/user/get";
 const POST_URL = "http://localhost:8080/api/v1/basic/user/create";
 

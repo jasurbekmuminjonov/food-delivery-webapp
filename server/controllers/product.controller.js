@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Product = require("../models/product.model");
 
 exports.createProduct = async (req, res) => {
@@ -19,6 +20,7 @@ exports.createProduct = async (req, res) => {
       selling_price,
       product_description,
       product_ingredients,
+      starting_quantity,
       additionals,
       "nutritional_value.kkal": kkal,
       "nutritional_value.protein": protein,
@@ -36,7 +38,7 @@ exports.createProduct = async (req, res) => {
       subcategory,
       unit,
       unit_description,
-      starting_quantity: unit === "dona" ? 1 : 0.5,
+      starting_quantity: Number(starting_quantity),
       expiration: Number(expiration),
       selling_price: Number(selling_price),
       product_description,
@@ -89,6 +91,7 @@ exports.editProduct = async (req, res) => {
       expiration,
       selling_price,
       product_description,
+      starting_quantity,
       product_ingredients,
       additionals,
       "nutritional_value.kkal": kkal,
@@ -96,7 +99,11 @@ exports.editProduct = async (req, res) => {
       "nutritional_value.fat": fat,
       "nutritional_value.uglevod": uglevod,
     } = req.body;
-
+    const hasNutritionalValue =
+      kkal !== undefined ||
+      protein !== undefined ||
+      fat !== undefined ||
+      uglevod !== undefined;
     const updatedProduct = {
       product_name,
       category,
@@ -104,6 +111,7 @@ exports.editProduct = async (req, res) => {
       unit,
       unit_description,
       expiration: Number(expiration),
+      starting_quantity: Number(starting_quantity),
       selling_price: Number(selling_price),
       product_description,
       product_ingredients,
@@ -112,12 +120,14 @@ exports.editProduct = async (req, res) => {
         : additionals
         ? [additionals]
         : [],
-      nutritional_value: {
-        kkal: Number(kkal),
-        protein: Number(protein),
-        fat: Number(fat),
-        uglevod: Number(uglevod),
-      },
+      nutritional_value: hasNutritionalValue
+        ? {
+            kkal: kkal !== undefined ? Number(kkal) || null : null,
+            protein: protein !== undefined ? Number(protein) || null : null,
+            fat: fat !== undefined ? Number(fat) || null : null,
+            uglevod: uglevod !== undefined ? Number(uglevod) || null : null,
+          }
+        : null,
     };
 
     await Product.findByIdAndUpdate(id, updatedProduct);
@@ -315,6 +325,54 @@ exports.toggleProductStatus = async (req, res) => {
     await Product.findByIdAndUpdate(id, { $set: { status: newStatus } });
 
     res.status(200).json({ message: "Tovar holati o'zgartirildi" });
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({ message: "Serverda xatolik", err });
+  }
+};
+
+exports.getProductsByNameQuery = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const products = await Product.find();
+    const filteredProducts =
+      q.length > 2
+        ? products.filter((p) => {
+            const words = p.product_name
+              .toLowerCase()
+              .split(/[\s\-–—.,;:!?"“”‘’()[\]{}\\/\n\r*+=@$%]+/);
+            return words.includes(q.toLowerCase());
+          })
+        : [];
+    return res.status(200).json(filteredProducts);
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({ message: "Serverda xatolik", err });
+  }
+};
+
+exports.getProductsByQuery = async (req, res) => {
+  try {
+    const { category_id, discount, product_id } = req.query;
+
+    const filter = {};
+
+    if (category_id) {
+      filter.category = category_id;
+    }
+
+    if (discount === "true") {
+      filter["discount_log.status"] = "active";
+    }
+    if (product_id) {
+      filter._id = new mongoose.Types.ObjectId(product_id);
+    }
+
+    let products = await Product.find(filter)
+      .populate("category")
+      .populate("subcategory");
+
+    return res.status(200).json(products);
   } catch (err) {
     console.log(err.message);
     return res.status(500).json({ message: "Serverda xatolik", err });

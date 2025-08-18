@@ -1,11 +1,15 @@
 const Order = require("../models/order.model");
 const User = require("../models/user.model");
-const Product = require("../models/product.model");
+const Courier = require("../models/courier.model");
+const socket = require("../socket");
+const TelegramBot = require("node-telegram-bot-api");
+
+const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: false });
 
 exports.createOrder = async (req, res) => {
   try {
+    let io = req.app.get("socket");
     const { telegram_id } = req.user;
-    console.log(req.user);
 
     const { products, delivery_fee } = req.body;
     const user = await User.findOne({ telegram_id });
@@ -27,7 +31,9 @@ exports.createOrder = async (req, res) => {
 
     req.body.total_price = totalPrice + delivery_fee;
     req.body.user_id = user._id;
-    await Order.create(req.body);
+    const order = await Order.create(req.body);
+    io.emit("new_order", order);
+
     res
       .status(201)
       .json({ message: "Buyurtma yaratildi, kuryer yetkazishini kuting" });
@@ -41,7 +47,8 @@ exports.getOrders = async (req, res) => {
   try {
     const orders = await Order.find()
       .populate("user_id")
-      .populate("courier_id");
+      .populate("courier_id")
+      .populate("products.product_id");
     res.status(200).json(orders);
   } catch (err) {
     console.log(err.message);
@@ -68,9 +75,9 @@ exports.getOrdersByUser = async (req, res) => {
           "Avtorizatsiya xatosi. Telegram botga /start buyrug'ini bering",
       });
     }
-    const orders = await Order.find({ user_id: user._id }).populate(
-      "courier_id"
-    );
+    const orders = await Order.find({ user_id: user._id })
+      .populate("courier_id")
+      .populate("products.product_id");
     res.status(200).json(orders);
   } catch (err) {
     console.log(err.message);
@@ -126,13 +133,32 @@ exports.completePreparing = async (req, res) => {
   try {
     const { id } = req.params;
     const { courier_id } = req.body;
-    await Order.findByIdAndUpdate(id, {
+    const order = await Order.findByIdAndUpdate(id, {
       $set: {
         order_status: "delivering",
         courier_id,
         prepared_date: Date.now(),
       },
     });
+    const courier = await Courier.findById(courier_id);
+    const user = await User.findById(order.user_id);
+    const io = req.app.get("socket");
+    socket.sendToUser(io, user.telegram_id, "preparing_completed", {
+      courier,
+    });
+    socket.sendToCourier(io, courier_id, "preparing_completed", {
+      order,
+    });
+    await bot.sendMessage(
+      user.telegram_id,
+      `✅ *Buyurtmangiz tayyor!*  
+🚚 Kuryer siz tomon yo'lga chiqmoqda.  
+
+👤 *Kuryer:* ${courier.courier_name}  
+📞 *Telefon:* ${courier.courier_phone}`,
+      { parse_mode: "Markdown" }
+    );
+
     res.status(200).json({ message: "Buyurtma yetkazishga tayyorlandi" });
   } catch (err) {
     console.log(err.message);
@@ -143,13 +169,22 @@ exports.completePreparing = async (req, res) => {
 exports.completeDelivering = async (req, res) => {
   try {
     const { id } = req.params;
-    await Order.findByIdAndUpdate(id, {
+    const order = await Order.findByIdAndUpdate(id, {
       $set: {
         order_status: "completed",
         payment_method: req.body.payment_method,
         delivered_date: Date.now(),
       },
     });
+    const user = await User.findById(order.user_id);
+    io.emit("complete_delivering", order);
+
+    await bot.sendMessage(
+      user.telegram_id,
+      `✅ *Buyurtmangiz topshirildi*  
+🛒 Haridingiz uchun rahmat!`,
+      { parse_mode: "Markdown" }
+    );
     res.status(200).json({ message: "Buyurtma yetkazildi" });
   } catch (err) {
     console.log(err.message);

@@ -27,6 +27,10 @@ textarea {
   outline: none;
   cursor: pointer;
 }
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .auth-layout {
   width: 100vw;
   height: 100svh;
@@ -322,7 +326,6 @@ div::-webkit-scrollbar {
   width: 90%;
   display: flex;
   align-self: center;
-  /* margin-top: 45px; */
   height: 50px;
   align-items: center;
   justify-content: center;
@@ -820,7 +823,7 @@ div::-webkit-scrollbar {
 }
 .aksiya-modal {
   width: 90%;
-  height: 60%;
+  height: 70%;
   max-height: 500px;
   max-width: 430px;
   display: flex;
@@ -872,7 +875,7 @@ div::-webkit-scrollbar {
 }
 .modal-body {
   display: flex;
-  height: 50%;
+  height: 100%;
   flex-direction: column;
   gap: 5px;
   padding-inline: 15px;
@@ -883,6 +886,7 @@ div::-webkit-scrollbar {
   width: 100%;
   height: 40px;
   border-radius: 15px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -962,7 +966,7 @@ div::-webkit-scrollbar {
   width: 100%;
   height: 100%;
   padding-block: 5px;
-  padding-inline: 15px;
+  padding-inline: 5px;
   padding-block-start: 55px;
 }
 .search-container {
@@ -975,7 +979,7 @@ div::-webkit-scrollbar {
   left: 0;
   width: 100%;
   align-self: center;
-  padding-inline-end: 25px;
+  padding-inline: 5px;
   z-index: 2;
   background-color: #fff;
   box-shadow: 0 0 5px gray;
@@ -994,6 +998,7 @@ div::-webkit-scrollbar {
   width: 40px;
   height: 40px;
   margin-right: 5px;
+  padding-inline: 5px;
   font-size: 20px;
   display: flex;
   align-items: center;
@@ -1196,14 +1201,14 @@ div::-webkit-scrollbar {
 .basket-sticky > div > button:first-child > span {
   position: absolute;
   top: -5px;
-  right: 2px;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: red;
   color: #fff;
-  padding-inline: 5px;
-  padding-block: 2px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
 }
 .basket-sticky > div {
@@ -1305,7 +1310,6 @@ progress::-webkit-progress-value {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  /* margin-top: 5px; */
   background-color: transparent;
   border-radius: 15px;
 }

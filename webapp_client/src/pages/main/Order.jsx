@@ -9,7 +9,6 @@ import { AiOutlineDelete } from "react-icons/ai";
 import { useMemo, useState } from "react";
 import { Divider } from "antd";
 import giftIos from "../../assets/gift_ios.png";
-import { useGetProductsQuery } from "../../context/services/product.service";
 import cashImg from "../../assets/cash.png";
 import male from "../../assets/male.png";
 import female from "../../assets/female.png";
@@ -19,7 +18,6 @@ import { IoMdDoneAll } from "react-icons/io";
 
 const Order = () => {
   const { data: orders = [] } = useGetOrdersQuery();
-  const { data: products = [] } = useGetProductsQuery();
   const [cancellingReason, setCancellingReason] = useState("");
   const [cancelOrder] = useCancelOrderMutation();
 
@@ -31,9 +29,6 @@ const Order = () => {
     return active;
   }, [orders]);
 
-  function returnProductFromId(id) {
-    return products.find((p) => p._id === id);
-  }
   const statusTypes = {
     preparing: {
       text: "Tayyorlanmoqda",
@@ -155,28 +150,21 @@ const Order = () => {
       <h3>Mahsulotlar</h3>
       <div className="basket-products">
         {activeOrder?.products?.map((p) => (
-          <div className="basket-product">
+          <div key={p.product_id} className="basket-product">
             <img
-              src={
-                returnProductFromId(p.product_id).image_log.find(
-                  (i) => i.isMain
-                ).image_url
-              }
+              src={p.product_id.image_log.find((i) => i.isMain).image_url}
               alt=""
             />
             <div className="basket-title">
-              <p>{returnProductFromId(p.product_id).product_name}</p>
-              {returnProductFromId(p.product_id).discount_log.find(
-                (d) => d.status === "active"
-              ) ? (
+              <p>{p.product_id.product_name}</p>
+              {p.product_id.discount_log.find((d) => d.status === "active") ? (
                 <>
                   <b>
                     {Number(
                       (
-                        returnProductFromId(p.product_id).selling_price -
-                        (returnProductFromId(p.product_id).selling_price /
-                          100) *
-                          returnProductFromId(p.product_id).discount_log.find(
+                        p.product_id.selling_price -
+                        (p.product_id.selling_price / 100) *
+                          p.product_id.discount_log.find(
                             (d) => d.status === "active"
                           )?.percent
                       ).toFixed()
@@ -184,26 +172,20 @@ const Order = () => {
                     so'm
                   </b>
                   <span>
-                    {returnProductFromId(
-                      p.product_id
-                    ).selling_price?.toLocaleString("ru-RU")}{" "}
-                    so'm
+                    {p.product_id.selling_price?.toLocaleString("ru-RU")} so'm
                   </span>
                 </>
               ) : (
                 <h4 style={{ fontWeight: "500" }}>
-                  {returnProductFromId(
-                    p.product_id
-                  ).selling_price?.toLocaleString("ru-RU")}{" "}
-                  so'm
+                  {p.product_id.selling_price?.toLocaleString("ru-RU")} so'm
                 </h4>
               )}
 
-              <h5>{returnProductFromId(p.product_id).unit_description}</h5>
+              <h5>{p.product_id.unit_description}</h5>
             </div>
             <div className="quantity">
               <p>
-                {p.quantity} {returnProductFromId(p.product_id).unit}
+                {p.quantity} {p.product_id.unit}
               </p>
             </div>
           </div>

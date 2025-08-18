@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery, retry } from "@reduxjs/toolkit/query/react";
 
 const rawBaseQuery = fetchBaseQuery({
   baseUrl: "http://localhost:8080/api/v1/token",
+  // baseUrl: "https://kwmkqg1t-8080.euw.devtunnels.ms/api/v1/token",
   prepareHeaders: (headers) => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -17,7 +18,6 @@ const baseQuery = async (args, api, extraOptions) => {
 
   if (result.error && result.error.status === 401) {
     localStorage.removeItem("token");
-    window.location.reload();
   }
 
   return result;

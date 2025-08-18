@@ -124,6 +124,10 @@ const Products = () => {
       dataIndex: "unit_description",
     },
     {
+      title: "Standart miqdor",
+      dataIndex: "starting_quantity",
+    },
+    {
       title: "Aktiv chegirma",
       dataIndex: "discount_log",
       render: (text) => {
