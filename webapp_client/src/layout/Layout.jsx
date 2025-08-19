@@ -11,6 +11,7 @@ import Result from "../pages/main/Result";
 import Order from "../pages/main/Order";
 import Category from "../components/Category";
 import User from "../pages/main/User";
+import OrderHistory from "../pages/main/OrderHistory";
 
 const Layout = () => {
   return (
@@ -27,6 +28,7 @@ const Layout = () => {
         <Route path="/success" element={<Result />} />
         <Route path="/order" element={<Order />} />
         <Route path="/user" element={<User />} />
+        <Route path="/order/history" element={<OrderHistory />} />
         <Route path="/category/:category" element={<Category />} />
       </Routes>
     </div>

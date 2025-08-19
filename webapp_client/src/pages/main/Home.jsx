@@ -267,7 +267,7 @@ const Home = () => {
           </button>
           <b>Saralangan</b>
         </div>
-        <div>
+        <div onClick={() => navigate("/order/history")}>
           <button>
             <PiArrowCounterClockwiseBold size={25} color="blue" />
           </button>
