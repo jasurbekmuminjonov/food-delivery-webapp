@@ -55,6 +55,7 @@ exports.getOrders = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
+
 exports.getCourierOrders = async (req, res) => {
   try {
     const orders = await Order.find({ courier_id: req.user.id });
@@ -64,6 +65,7 @@ exports.getCourierOrders = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
+
 exports.getOrdersByUser = async (req, res) => {
   try {
     const { telegram_id } = req.user;
@@ -142,9 +144,7 @@ exports.completePreparing = async (req, res) => {
     const courier = await Courier.findById(courier_id);
     const user = await User.findById(order.user_id);
     const io = req.app.get("socket");
-    socket.sendToUser(io, user.telegram_id, "preparing_completed", {
-      courier,
-    });
+    socket.sendToUser(io, user.telegram_id, "preparing_completed");
     socket.sendToCourier(io, courier_id, "preparing_completed", {
       order,
     });
@@ -162,7 +162,7 @@ exports.completePreparing = async (req, res) => {
   } catch (err) {
     console.log(err.message);
     return res.status(500).json({ message: "Serverda xatolik", err });
-  } 
+  }
 };
 
 exports.completeDelivering = async (req, res) => {
@@ -190,10 +190,11 @@ exports.completeDelivering = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
+
 exports.cancelOrder = async (req, res) => {
   try {
     const { cancellation_reason = "", order_id } = req.body;
-    await Order.findByIdAndUpdate(order_id, {
+    const order = await Order.findByIdAndUpdate(order_id, {
       $set: {
         order_status: "canceled",
         cancellation_reason,
@@ -205,6 +206,11 @@ exports.cancelOrder = async (req, res) => {
     //     $inc: { total_stock: item.quantity },
     //   });
     // }
+    const io = req.app.get("socket");
+
+    socket.sendToCourier(io, order.courier_id, "order_canceled", order);
+    io.emit("order_canceled", order);
+
     res.status(200).json({ message: "Buyurtma yetkazishga tayyorlandi" });
   } catch (err) {
     console.log(err.message);

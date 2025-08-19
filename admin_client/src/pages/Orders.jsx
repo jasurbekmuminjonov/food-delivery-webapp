@@ -293,7 +293,11 @@ const Orders = () => {
         <Button onClick={() => handlePrint(record)} icon={<IoMdPrint />} />
       ),
     },
-  ];
+    orderFilter === "canceled" && {
+      title: "Bekor qilish sababi",
+      dataIndex: "cancellation_reason",
+    },
+  ].filter(Boolean);;
 
   const handlePrint = (record) => {
     const printWindow = window.open("", "_blank", "width=400,height=600");

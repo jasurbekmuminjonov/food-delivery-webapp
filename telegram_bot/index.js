@@ -25,7 +25,7 @@ bot.onText(/\/start/, async (msg) => {
             {
               text: "Boshlash",
               web_app: {
-                url: `https://kwmkqg1t-5173.euw.devtunnels.ms?start=${telegramId}`,
+                url: `http://localhost:5173?start=${telegramId}`,
               },
             },
           ],
@@ -123,7 +123,7 @@ bot.on("callback_query", async (query) => {
             {
               text: "Boshlash",
               web_app: {
-                url: `https://kwmkqg1t-5173.euw.devtunnels.ms?start=${telegramId}`,
+                url: `http://localhost:5173?start=${telegramId}`,
               },
             },
           ],

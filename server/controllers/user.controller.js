@@ -1,5 +1,8 @@
 const User = require("../models/user.model");
+const socket = require("../socket");
+const TelegramBot = require("node-telegram-bot-api");
 
+const bot = new TelegramBot(process.env.TELEGRAM_BOT_TOKEN, { polling: false });
 exports.createUser = async (req, res) => {
   try {
     const { telegram_id } = req.body;
@@ -34,9 +37,25 @@ exports.userBlockingToggle = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "Foydalanuvchi topilmadi" });
     }
-
+    let status;
     user.isBlocked = !user.isBlocked;
+    status = user.isBlocked;
     await user.save();
+
+    const io = req.app.get("socket");
+    socket.sendToUser(io, user.telegram_id, "user_block_toggle");
+
+    const blockMessage = `❌ **Sizning hisobingiz moderatorlarimiz tomonidan bloklandi.**  
+Blokdan chiqish uchun biz bilan bog‘lanishingiz mumkin: [@bim_delivery](https://t.me/bim_delivery)`;
+    const unblockMessage = `🎉 **Tabriklaymiz!**  
+Siz moderatorlarimiz tomonidan **blokdan chiqarildingiz!**  
+Iltimos, tartib-qoidalarga amal qilgan holda ilovadan foydalanishingizni so‘raymiz.`;
+
+    await bot.sendMessage(
+      user.telegram_id,
+      status ? blockMessage : unblockMessage,
+      { parse_mode: "Markdown" }
+    );
 
     return res.status(200).json({
       message: `Foydalanuvchi ${
