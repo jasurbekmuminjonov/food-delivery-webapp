@@ -6,7 +6,7 @@ exports.createProduct = async (req, res) => {
     const files = req.files || [];
 
     const productImages = files.map((item, index) => ({
-      image_url: `http://localhost:8080/images/${item.filename}`,
+      image_url: `https://bimserver.richman.uz/images/${item.filename}`,
       isMain: index === 0,
     }));
 
@@ -142,7 +142,7 @@ exports.inserImageToProduct = async (req, res) => {
   try {
     const { id } = req.params;
     const payload = {
-      image_url: `http://localhost:8080/images/${req.file.filename}`,
+      image_url: `https://bimserver.richman.uz/images/${req.file.filename}`,
       isMain: false,
     };
     await Product.findByIdAndUpdate(id, { $push: { image_log: payload } });
