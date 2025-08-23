@@ -176,6 +176,8 @@ exports.completeDelivering = async (req, res) => {
       },
     });
     const user = await User.findById(order.user_id);
+    const io = req.app.get("socket");
+
     io.emit("complete_delivering", order);
 
     await bot.sendMessage(
