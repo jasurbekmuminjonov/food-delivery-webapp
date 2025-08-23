@@ -5,7 +5,6 @@ import {
   useCreateSubcategoryMutation,
   useGetCategoriesQuery,
 } from "../context/services/category.service";
-//
 const CategoryAdd = () => {
   const [form] = Form.useForm();
   const [type, setType] = useState("category");
