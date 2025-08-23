@@ -1,7 +1,12 @@
 const jwt = require("jsonwebtoken");
 
 const tokenAuth = (req, res, next) => {
-  const publicPaths = ["/admin/create", "/admin/login", "/courier/login"];
+  const publicPaths = [
+    "/admin/create",
+    "/admin/password",
+    "/admin/login",
+    "/courier/login",
+  ];
 
   if (publicPaths.includes(req.path)) {
     return next();

@@ -37,3 +37,20 @@ exports.loginAdmin = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
+
+exports.editAdminPassword = async (req, res) => {
+  try {
+    const { admin_key, new_password } = req.body;
+    const hashed = await hashPassword(new_password);
+    const admin = await Admin.findByIdAndUpdate(admin_key, {
+      $set: { admin_password: hashed },
+    });
+    if (!admin) {
+      return res.status(404).json({ message: "Admin topilmadi" });
+    }
+    res.status(200).json({ message: "Parol tahrirlandi" });
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({ message: "Serverda xatolik", err });
+  }
+};

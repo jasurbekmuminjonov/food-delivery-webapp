@@ -1,5 +1,5 @@
 const express = require("express");
-const { createAdmin, loginAdmin } = require("../controllers/admin.controller");
+const { createAdmin, loginAdmin, editAdminPassword } = require("../controllers/admin.controller");
 const {
   createCourier,
   loginCourier,
@@ -43,6 +43,7 @@ const rt = express.Router();
 
 rt.post("/admin/create", createAdmin);
 rt.post("/admin/login", loginAdmin);
+rt.put("/admin/password", editAdminPassword)
 
 rt.post("/courier/create", createCourier);
 rt.post("/courier/login", loginCourier);

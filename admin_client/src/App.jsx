@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useGetOrderQuery } from "./context/services/order.service";
-import Layout from "./layout/layout";
+import Layout from "./layout/Layout";
 import Login from "./pages/Login";
 import socket from "./socket";
 import { notification } from "antd";
