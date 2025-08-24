@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from "react";
 import {
   useCreateDiscountForProductMutation,
   useDeleteImageInProductMutation,
+  useDeleteProductMutation,
   useGetProductsQuery,
   useInsertImageToProductMutation,
   useRemoveDiscountInProductMutation,
@@ -24,7 +25,7 @@ import {
 } from "antd";
 import { IoMdEye } from "react-icons/io";
 import { FaHome } from "react-icons/fa";
-import { MdEdit } from "react-icons/md";
+import { MdDeleteForever, MdEdit } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { FaXmark } from "react-icons/fa6";
 import { RiImageAddLine } from "react-icons/ri";
@@ -42,6 +43,7 @@ const Products = () => {
   const [createDiscount] = useCreateDiscountForProductMutation();
   const [removeDiscount] = useRemoveDiscountInProductMutation();
   const [toggleStatus] = useToggleProductStatusMutation();
+  const [deleteProduct] = useDeleteProductMutation();
   const navigate = useNavigate();
   const fileRef = useRef();
 
@@ -338,6 +340,16 @@ const Products = () => {
                 });
               }
             }}
+          />
+          <Button
+            onClick={async () => {
+              try {
+                await deleteProduct(record._id).unwrap();
+              } catch (err) {
+                console.log(err);
+              }
+            }}
+            icon={<MdDeleteForever />}
           />
         </Space>
       ),

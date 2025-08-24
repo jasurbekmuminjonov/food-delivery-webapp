@@ -31,7 +31,7 @@ const ProductSchema = new mongoose.Schema(
     },
     expiration: {
       type: Number,
-      default: null,
+      default: 0,
     },
     additionals: {
       type: [String],
@@ -108,11 +108,11 @@ const ProductSchema = new mongoose.Schema(
     },
     product_description: {
       type: String,
-      default: null,
+      default: "",
     },
     product_ingredients: {
       type: String,
-      default: null,
+      default: "",
     },
     nutritional_value: {
       type: {

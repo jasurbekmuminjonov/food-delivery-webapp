@@ -16,12 +16,12 @@ exports.createProduct = async (req, res) => {
       subcategory,
       unit,
       unit_description,
-      expiration,
+      expiration = 0,
       selling_price,
-      product_description,
-      product_ingredients,
+      product_description = "",
+      product_ingredients = "",
       starting_quantity,
-      additionals,
+      additionals = [],
       "nutritional_value.kkal": kkal,
       "nutritional_value.protein": protein,
       "nutritional_value.fat": fat,
@@ -39,7 +39,7 @@ exports.createProduct = async (req, res) => {
       unit,
       unit_description,
       starting_quantity: Number(starting_quantity),
-      expiration: Number(expiration),
+      expiration: expiration,
       selling_price: Number(selling_price),
       product_description,
       product_ingredients,
@@ -88,11 +88,11 @@ exports.editProduct = async (req, res) => {
       subcategory,
       unit,
       unit_description,
-      expiration,
+      expiration = 0,
       selling_price,
-      product_description,
+      product_description = "",
       starting_quantity,
-      product_ingredients,
+      product_ingredients = "",
       additionals,
       "nutritional_value.kkal": kkal,
       "nutritional_value.protein": protein,
@@ -110,7 +110,7 @@ exports.editProduct = async (req, res) => {
       subcategory,
       unit,
       unit_description,
-      expiration: Number(expiration),
+      expiration: expiration,
       starting_quantity: Number(starting_quantity),
       selling_price: Number(selling_price),
       product_description,
@@ -330,7 +330,6 @@ exports.toggleProductStatus = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
-
 exports.getProductsByNameQuery = async (req, res) => {
   try {
     const { q } = req.query;
@@ -350,7 +349,6 @@ exports.getProductsByNameQuery = async (req, res) => {
     return res.status(500).json({ message: "Serverda xatolik", err });
   }
 };
-
 exports.getProductsByQuery = async (req, res) => {
   try {
     const { category_id, discount, product_id } = req.query;
@@ -373,6 +371,16 @@ exports.getProductsByQuery = async (req, res) => {
       .populate("subcategory");
 
     return res.status(200).json(products);
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({ message: "Serverda xatolik", err });
+  }
+};
+exports.deleteProduct = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Product.findByIdAndDelete(id);
+    res.status(200).json({ message: "Tovar o'chirildi" });
   } catch (err) {
     console.log(err.message);
     return res.status(500).json({ message: "Serverda xatolik", err });

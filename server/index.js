@@ -6,6 +6,7 @@ const cors = require("cors");
 const path = require("path");
 const tokenAuth = require("./middlewares/token.auth");
 const basicAuth = require("./middlewares/basic.auth");
+require("./config/cron");
 const app = express();
 app.use(cors()); 
 const { createServer } = require("node:http");

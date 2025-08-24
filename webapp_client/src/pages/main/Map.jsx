@@ -9,7 +9,7 @@ import markerPng from "../../assets/marker.png";
 const containerStyle = { width: "100%", height: "100%", outline: "none" };
 const initialCenter = { lat: 40.99759001665414, lng: 71.67265238668314 };
 const staticCenter = { lat: 40.99759001665414, lng: 71.67265238668314 };
-const radius = 10000;
+const radius = 15000;
 function getDistance(lat1, lng1, lat2, lng2) {
   const R = 6371e3;
   const toRad = (deg) => (deg * Math.PI) / 180;

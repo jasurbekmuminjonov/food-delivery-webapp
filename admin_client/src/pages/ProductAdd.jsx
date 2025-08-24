@@ -206,6 +206,8 @@ const ProductAdd = () => {
                 <Form.Item
                   name="expiration"
                   rules={[{ type: "number", min: 0 }]}
+                  initialValue={0}
+                  label="Yaroqlilik kunlari"
                   noStyle
                 >
                   <InputNumber
@@ -269,9 +271,7 @@ const ProductAdd = () => {
                   value={newAdditional}
                   onChange={(e) => setNewAdditional(e.target.value)}
                 />
-                <Button  onClick={handleAddAdditional}>
-                  Qo'shish
-                </Button>
+                <Button onClick={handleAddAdditional}>Qo'shish</Button>
               </Space.Compact>
               <div style={{ marginTop: "8px" }}>
                 {additionals.map((item, index) => (

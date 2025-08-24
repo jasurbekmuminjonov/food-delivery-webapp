@@ -1,5 +1,9 @@
 const express = require("express");
-const { createAdmin, loginAdmin, editAdminPassword } = require("../controllers/admin.controller");
+const {
+  createAdmin,
+  loginAdmin,
+  editAdminPassword,
+} = require("../controllers/admin.controller");
 const {
   createCourier,
   loginCourier,
@@ -19,6 +23,7 @@ const {
   createStockForProduct,
   searchProducts,
   toggleProductStatus,
+  deleteProduct,
 } = require("../controllers/product.controller");
 
 const {
@@ -43,7 +48,7 @@ const rt = express.Router();
 
 rt.post("/admin/create", createAdmin);
 rt.post("/admin/login", loginAdmin);
-rt.put("/admin/password", editAdminPassword)
+rt.put("/admin/password", editAdminPassword);
 
 rt.post("/courier/create", createCourier);
 rt.post("/courier/login", loginCourier);
@@ -54,6 +59,7 @@ rt.put("/courier/password/:id", editCourierPassword);
 rt.post("/product/create", upload.array("image_log"), createProduct);
 rt.get("/product/get", getProducts);
 rt.put("/product/:id", upload.none(), editProduct);
+rt.delete("/product/:id", deleteProduct);
 rt.post("/product/image/:id", upload.single("image"), inserImageToProduct);
 rt.delete("/product/image", deleteImageInProduct);
 rt.put("/product/image/main", setImageToMain);

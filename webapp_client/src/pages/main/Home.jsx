@@ -85,14 +85,31 @@ import aksiya from "../../assets/aksiya.png";
 import gift_ios from "../../assets/gift_ios.png";
 
 import Card from "../../components/Card";
-import Loading from "./Loading";
 import EmptyCard from "../../components/EmptyCard";
 const Home = () => {
   const [aksiyaModal, setAksiyaModal] = useState(false);
   const { data: orders = [] } = useGetOrdersQuery();
   const [closing, setClosing] = useState(false);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const homeRef = useRef(null);
+
+  useEffect(() => {
+    const savedScrollY = sessionStorage.getItem("homeScrollY");
+    if (savedScrollY && homeRef.current) {
+      homeRef.current.scrollTop = parseInt(savedScrollY);
+    }
+
+    const handleScroll = () => {
+      sessionStorage.setItem("homeScrollY", homeRef.current.scrollTop);
+    };
+
+    const div = homeRef.current;
+    if (div) div.addEventListener("scroll", handleScroll);
+
+    return () => {
+      if (div) div.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   const [getUser, { data: userData = {} }] = useLazyGetUserByQueryQuery();
   const [getDiscountProducts, { data: discountedProducts = [] }] =
@@ -144,7 +161,7 @@ const Home = () => {
   }, []);
 
   return (
-    <div className="home">
+    <div className="home" ref={homeRef}>
       <div
         style={
           showSticky

@@ -5,19 +5,19 @@ const axios = require("axios");
 const token = process.env.BOT_TOKEN;
 const bot = new TelegramBot(token, { polling: true });
 
-// const GET_URL = "https://kwmkqg1t-8080.euw.devtunnels.ms/api/v1/basic/user/get";
-// const POST_URL = "https://kwmkqg1t-8080.euw.devtunnels.ms/api/v1/basic/user/create";
 const GET_URL = "https://bimserver.richman.uz/api/v1/basic/user/get";
 const POST_URL = "https://bimserver.richman.uz/api/v1/basic/user/create";
 
 const userStates = {};
 
+// START komandasi
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
   const telegramId = msg.from.id;
 
   try {
     await axios.get(`${GET_URL}?telegram_id=${telegramId}`);
+
     bot.sendMessage(chatId, "Boshlash uchun quyidagi tugmani bosing:", {
       reply_markup: {
         inline_keyboard: [
@@ -53,6 +53,7 @@ bot.onText(/\/start/, async (msg) => {
   }
 });
 
+// CONTACT bosqichi
 bot.on("contact", async (msg) => {
   const telegramId = msg.from.id;
   const chatId = msg.chat.id;
@@ -68,13 +69,12 @@ bot.on("contact", async (msg) => {
     userStates[telegramId] = { stage: "awaiting_name" };
 
     bot.sendMessage(chatId, "Ismingizni kiriting:", {
-      reply_markup: {
-        remove_keyboard: true,
-      },
+      reply_markup: { remove_keyboard: true },
     });
   }
 });
 
+// NAME bosqichi
 bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const telegramId = msg.from.id;
@@ -103,6 +103,7 @@ bot.on("message", async (msg) => {
   }
 });
 
+// GENDER bosqichi
 bot.on("callback_query", async (query) => {
   const chatId = query.message.chat.id;
   const telegramId = query.from.id;
@@ -116,6 +117,39 @@ bot.on("callback_query", async (query) => {
       user_gender: gender,
     });
 
+    userStates[telegramId] = { stage: "awaiting_location" };
+
+    bot.sendMessage(chatId, "Iltimos, joylashuvingizni yuboring 📍", {
+      reply_markup: {
+        keyboard: [
+          [{ text: "📍 Lokatsiyani yuborish", request_location: true }],
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: true,
+      },
+    });
+  }
+
+  bot.answerCallbackQuery(query.id);
+});
+
+// LOCATION bosqichi
+bot.on("location", async (msg) => {
+  const chatId = msg.chat.id;
+  const telegramId = msg.from.id;
+
+  if (userStates[telegramId]?.stage === "awaiting_location") {
+    const { latitude, longitude } = msg.location;
+
+    await axios.post(POST_URL, {
+      telegram_id: telegramId,
+      default_address: {
+        lat: latitude,
+        long: longitude,
+      },
+    });
+
+    // Yakuniy tugma
     bot.sendMessage(chatId, "Boshlash uchun quyidagi tugmani bosing:", {
       reply_markup: {
         inline_keyboard: [
@@ -130,8 +164,7 @@ bot.on("callback_query", async (query) => {
         ],
       },
     });
+
     userStates[telegramId] = null;
   }
-
-  bot.answerCallbackQuery(query.id);
 });

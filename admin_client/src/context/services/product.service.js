@@ -27,6 +27,13 @@ export const productApi = api.injectEndpoints({
       }),
       invalidatesTags: ["Product"],
     }),
+    deleteProduct: builder.mutation({
+      query: (id) => ({
+        url: `/product/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Product"],
+    }),
 
     insertImageToProduct: builder.mutation({
       query: ({ id, formData }) => ({
@@ -108,4 +115,5 @@ export const {
   useCreateStockForProductMutation,
   useSearchProductsQuery,
   useToggleProductStatusMutation,
+  useDeleteProductMutation
 } = productApi;
