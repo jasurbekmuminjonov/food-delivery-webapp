@@ -18,7 +18,7 @@ import moment from "moment";
 import { FaCheckDouble, FaLocationDot } from "react-icons/fa6";
 import { IoMdPrint } from "react-icons/io";
 import { useGetCouriersQuery } from "../context/services/courier.service";
-
+import bimLogo from "../assets/bimLogo.png";
 const Orders = () => {
   const { data: orders = [], isLoading } = useGetOrderQuery();
   const { data: couriers = [] } = useGetCouriersQuery();
@@ -297,24 +297,10 @@ const Orders = () => {
       title: "Bekor qilish sababi",
       dataIndex: "cancellation_reason",
     },
-  ].filter(Boolean);;
+  ].filter(Boolean);
 
   const handlePrint = (record) => {
     const printWindow = window.open("", "_blank", "width=400,height=600");
-
-    const productsHtml = record.products
-      .map(
-        (p) => `
-      <tr>
-        <td>${p.product_id.product_name}</td>
-        <td style="text-align:center;">${p.quantity}</td>
-        <td style="text-align:right;">${p.sale_price.toLocaleString(
-          "ru-RU"
-        )}</td>
-      </tr>
-    `
-      )
-      .join("");
 
     const subtotal = record.products.reduce(
       (sum, p) => sum + p.sale_price * p.quantity,
@@ -333,7 +319,6 @@ const Orders = () => {
           @media print {
             @page {
               size: 80mm auto;
-              margin: 0;
             }
             body {
               font-family: "Poppins", sans-serif;
@@ -344,26 +329,74 @@ const Orders = () => {
               flex-direction: column;
               gap: 5px;
             }
+              .header > div{
+              width: 100%;
+              display: flex;
+              align-items: center;
+              justify-content: space-between;
+              }
+              .header > div > strong{
+              font-size: 16px;
+              font-weight: 500;
+              
+              }
+              .header > div > p{
+              font-size: 14px;
+              font-weight: 400;
+              
+              }
             .header {
               padding-bottom: 5px;
               margin-bottom: 10px;
               display: flex;
               flex-direction: column;
               gap: 5px;
+              width: 100%;
+
             }
             .header h2 {
               margin: 0;
+              font-size: 26px;
+              font-weight: 400;
+              text-align: center;
+            }
+            .header p {
+              margin: 0;
               font-size: 16px;
+              font-weight: 400;
               text-align: center;
             }
             .info {
-              font-size: 12px;
+              font-size: 16px;
               margin-bottom: 10px;
               display: flex;
               flex-direction: column;
               gap: 5px;
               align-items: end;
             }
+              .product_item{
+              display: flex;
+              align-items: center;
+              gap: 3px;
+              padding: 0px;
+              }
+              .chek_products{
+                            display: flex;
+              flex-direction: column;
+              gap: 5px;
+              width: 100%;
+              }
+              .chek_product{
+              width: 100%;
+
+                                          display: flex;
+              flex-direction: column;
+              gap: 0px;
+              }
+           .product_title{
+           font-size:20px}
+           .product_item > span{
+           font-size:18px}
 table {
   width: 100%;
   border-collapse: collapse;
@@ -392,49 +425,72 @@ table td:nth-child(2) {
 
             .footer {
               margin-top: 10px;
-              border-top: 1px dashed #000;
+              height: 200px;
+              border-top: 1px dotted #000;
               padding-top: 5px;
               text-align: center;
               font-size: 12px;
             }
+              .footer > p{
+              font-size: 18px;
+              }
           }
         </style>
       </head>
       <body>
         <div class="header">
-          <h2>Bim - onlayn supermarket</h2>
-          <div>Buyurtma ID si: #${record._id.slice(-6)?.toUpperCase()}</div>
-          <div>Kuryer: ${record?.courier_id?.courier_name || "-"}</div>
-          <div>Vaqt: ${new Date(record.createdAt).toLocaleString("ru-RU")}</div>
+        <img src=${bimLogo} alt="" />
+        <br />
+          <h2>BIM MARKET</h2>
+          <p>Online market 🛵</p>
+          <p>Tel: +998 93 949 6666</p>
+          <div><strong>Buyurtma ID si:</strong> <p>#${record._id
+            .slice(-6)
+            ?.toUpperCase()}</p></div>
+          <div><strong>Kuryer:</strong> <p>${
+            record?.courier_id?.courier_name || "-"
+          }</p></div>
+          <div><strong>Vaqt:</strong> <p>${new Date(
+            record.createdAt
+          ).toLocaleString("ru-RU")}</p></div>
         </div>
-        <table>
-          <thead>
-            <tr>
-              <th style="text-align:left;">Mahsulot nomi</th>
-              <th style="text-align:center;">Miqdori</th>
-              <th style="text-align:right;">Narxi</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${productsHtml}
-          </tbody>
-        </table>
+       <div class="chek_products">
+   ${record.products
+     .map(
+       (p, i) => `
+    <div class="chek_product">
+  <div class="product_title">
+    ${i + 1}. ${p.product_id.product_name}
+  </div>  
+      <div class="product_item">
+        <span>${p.quantity} x ${p.sale_price}</span>
+        <span style="flex-grow:1; border-bottom: 1px dotted #000;"></span>
+        <span> ${p.quantity * p.sale_price}</span>
+      </div>
+    </div>
+  `
+     )
+     .join("")}
 
+       </div>
         <div class="info">
           <div>Mahsulot: ${subtotal.toLocaleString("ru-RU")}</div>
           <div>Yetkazib berish: ${delivery.toLocaleString("ru-RU")}</div>
-          <div><b>UMUMIY: ${total.toLocaleString("ru-RU")} SO'M</b></div>
+          <div><b style="font-size: 22px;">UMUMIY: ${total.toLocaleString(
+            "ru-RU"
+          )} SO'M</b></div>
         </div>
-
         <div class="footer">
-          Xaridingiz uchun rahmat!
+          <p>Xaridingiz uchun rahmat!</p>
         </div>
       </body>
     </html>
   `);
 
     printWindow.document.close();
-    printWindow.print();
+    printWindow.onload = () => {
+      printWindow.print();
+    };
   };
 
   return (

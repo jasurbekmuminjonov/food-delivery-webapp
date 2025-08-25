@@ -15,7 +15,7 @@ const UserSchema = new mongoose.Schema(
     user_gender: {
       type: String,
       // enum: ["male", "female"],
-      default: "",
+      default: "male",
     },
     isBlocked: {
       type: Boolean,
