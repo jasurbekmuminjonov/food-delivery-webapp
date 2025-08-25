@@ -27,11 +27,15 @@ const Category = () => {
   const location = useLocation();
 
   useEffect(() => {
+    if (!categoryProducts?.length) return; 
+
     if (location.hash) {
-      const el = document.getElementById(location.hash.replace("#", ""));
-      if (el) el.scrollIntoView({ behavior: "smooth" });
+      const el = document.getElementById(location.hash.slice(1));
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth" });
+      }
     }
-  });
+  }, [categoryProducts, location.hash]);
 
   useEffect(() => {
     setSelectedCategory(categories.find((c) => c._id === category));

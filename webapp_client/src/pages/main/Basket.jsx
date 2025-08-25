@@ -280,11 +280,13 @@ const Basket = () => {
           <div className="payment-fixed-wrapper">
             <div className="payment-fixed">
               <button
-                disabled={activeOrder}
+                disabled={activeOrder || !userData?.default_address?.lat}
                 onClick={() => setConfirmModal(true)}
               >
                 {activeOrder ? (
                   <p>Birinchi aktiv buyurtmangizni qabul qiling</p>
+                ) : !userData?.default_address?.lat ? (
+                  <p>Yetkazish manzilini kiriting</p>
                 ) : (
                   <>
                     <p>
@@ -345,7 +347,11 @@ const Basket = () => {
             </div>
           </div>
           <div className="progress">
-            <strong>Yetkazish manzili</strong>
+            <strong
+              style={!userData?.default_address?.lat ? { color: "red" } : {}}
+            >
+              Yetkazish manzili
+            </strong>
             <p
               style={{
                 borderRadius: "15px",

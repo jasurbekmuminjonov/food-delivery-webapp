@@ -1180,7 +1180,7 @@ div::-webkit-scrollbar {
 .basket-sticky {
   width: 430px;
   border-radius: 15px 15px 0 0;
-  height: 50px;
+  height: 60px;
   display: flex;
   align-items: center;
   padding-inline: 15px;

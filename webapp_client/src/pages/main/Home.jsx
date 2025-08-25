@@ -13,7 +13,10 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useLazyGetProductsByQueryQuery } from "../../context/services/product.service";
-import { useLazyGetUserByQueryQuery } from "../../context/services/user.service";
+import {
+  useCreateUserMutation,
+  useLazyGetUserByQueryQuery,
+} from "../../context/services/user.service";
 import { useGetOrdersQuery } from "../../context/services/order.service";
 
 import ayol_gigiyenasi from "../../assets/categories/ayol_gigiyenasi.png";
@@ -114,6 +117,8 @@ const Home = () => {
   const [getUser, { data: userData = {} }] = useLazyGetUserByQueryQuery();
   const [getDiscountProducts, { data: discountedProducts = [] }] =
     useLazyGetProductsByQueryQuery();
+  const [createUser] = useCreateUserMutation();
+
   useEffect(() => {
     getDiscountProducts({ discount: "true" });
   }, [getDiscountProducts]);
@@ -159,6 +164,38 @@ const Home = () => {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      alert("Sizning brauzeringiz joylashuvni qo'llab quvvatlamaydi");
+      return;
+    }
+    if (userData?.default_address?.lat) {
+      return;
+    }
+
+    navigator.geolocation.watchPosition(
+      async (pos) => {
+        try {
+          await createUser({
+            telegram_id: localStorage.getItem("telegram_id"),
+            default_address: {
+              lat: pos.coords.latitude,
+              long: pos.coords.longitude,
+            },
+          }).unwrap();
+        } catch (error) {
+          console.error(error);
+        }
+      },
+      (err) => {
+        console.error(err);
+      },
+      {
+        enableHighAccuracy: true,
+      }
+    );
+  }, [createUser, userData]);
 
   return (
     <div className="home" ref={homeRef}>
