@@ -5,8 +5,10 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { IoSearchOutline } from "react-icons/io5";
 import Card from "./Card";
-import emptyShelf from "../assets/empty_shelf.avif";
 import EmptyCard from "./EmptyCard";
+import { MdDeliveryDining } from "react-icons/md";
+import { BsBasket3 } from "react-icons/bs";
+import { useGetOrdersQuery } from "../context/services/order.service";
 const Category = () => {
   const { category } = useParams();
   if (!category) {
@@ -14,6 +16,8 @@ const Category = () => {
   }
   const [getCategoryProducts, { data: categoryProducts = [] }] =
     useLazyGetProductsByQueryQuery();
+  const { data: orders = [] } = useGetOrdersQuery();
+
   useEffect(() => {
     getCategoryProducts({ category_id: category });
   }, [getCategoryProducts, category]);
@@ -27,7 +31,7 @@ const Category = () => {
   const location = useLocation();
 
   useEffect(() => {
-    if (!categoryProducts?.length) return; 
+    if (!categoryProducts?.length) return;
 
     if (location.hash) {
       const el = document.getElementById(location.hash.slice(1));
@@ -42,7 +46,10 @@ const Category = () => {
   }, [category, categories, categoryProducts]);
 
   return (
-    <div className="extra-products" style={{ paddingBlockStart: "50px" }}>
+    <div
+      className="extra-products"
+      style={{ paddingBlockStart: "50px", paddingBlockEnd: "60px" }}
+    >
       <div
         className="products-header-wrapper"
         style={{
@@ -75,7 +82,50 @@ const Category = () => {
           </button>
         </div>
       </div>
+      <div className="payment-fixed-wrapper">
+        <div className="basket-sticky">
+          <div>
+            <button>
+              <BsBasket3 size={20} />
+              <span>{basket.length}</span>
+            </button>
+            {orders.filter(
+              (o) =>
+                o.order_status === "preparing" ||
+                o.order_status === "delivering"
+            ).length > 0 && (
+              <button onClick={() => navigate("/order")}>
+                <MdDeliveryDining size={30} />
+              </button>
+            )}
+          </div>
+          <button onClick={() => navigate("/basket")}>
+            {basket.length < 1
+              ? "Savat bo'sh"
+              : Number(
+                  basket
+                    .reduce((acc, item) => {
+                      const product = item.product;
 
+                      if (!product) return acc;
+
+                      const discount = product.discount_log?.find(
+                        (d) => d.status === "active"
+                      );
+
+                      let price = product.selling_price;
+
+                      if (discount) {
+                        price = price - (price / 100) * discount.percent;
+                      }
+
+                      return acc + price * item.quantity;
+                    }, 0)
+                    .toFixed()
+                ).toLocaleString("ru-RU") + " so'm"}
+          </button>
+        </div>
+      </div>
       {selectedCategory?.subcategories?.map((item) => (
         <>
           <p style={{ fontWeight: "600" }} key={item._id} id={item._id}>
